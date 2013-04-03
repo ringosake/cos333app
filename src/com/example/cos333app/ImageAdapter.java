@@ -1,11 +1,13 @@
 package com.example.cos333app;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
@@ -28,18 +30,25 @@ public class ImageAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+        View view;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            view = new ImageView(mContext);
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            view=inflater.inflate(R.layout.gridobj, parent, false);
+            view.setLayoutParams(new GridView.LayoutParams(150, 150));
+            view.setPadding(5,5,5,5);
         } else {
-            imageView = (ImageView) convertView;
+            view = convertView;
         }
 
+        ImageView imageView = (ImageView)view.findViewById(R.id.imagepart);
         imageView.setImageResource(mThumbIds[position]);
-        return imageView;
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        TextView textView = (TextView)view.findViewById(R.id.textpart1);
+        textView.setText(String.valueOf(position));
+        textView = (TextView)view.findViewById(R.id.textpart2);
+        textView.setText(String.valueOf(position));
+        return view;
     }
 
     // references to our images
@@ -54,7 +63,6 @@ public class ImageAdapter extends BaseAdapter {
             R.drawable.sample_0, R.drawable.sample_1,
             R.drawable.sample_2, R.drawable.sample_3,
             R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7,
-            R.drawable.layer
+            R.drawable.sample_6, R.drawable.sample_7
     };
 }
