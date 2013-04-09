@@ -4,11 +4,12 @@
     android:layout_height="match_parent" >
     
     <!-- placeholder for mapview  -->
+
 	<ImageView
-        android:src="@drawable/totoro"
-        android:scaleType="centerCrop"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"/>
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:scaleType="centerCrop"
+	    android:src="@drawable/map" />
 
 	<RelativeLayout
 	    android:layout_width="match_parent"
@@ -49,7 +50,8 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:layout_marginLeft="10dp"
-		    android:text="Home" />
+		    android:text="Home" 
+		    android:onClick="goHome"/>
 
 		<Button
 		    android:id="@+id/button2"
