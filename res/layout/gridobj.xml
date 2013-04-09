@@ -6,7 +6,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_margin="0dp"
     android:background="#FFF" >
 
@@ -14,35 +14,41 @@
 	    android:id="@+id/imagepart"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:layout_centerInParent="true" />
+	    android:layout_centerInParent="true" 
+	    android:scaleType="centerCrop"/>
+
 	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="50dp"
-		android:layout_alignParentBottom="true"
-		android:background="#7000"
-		android:orientation="horizontal"
-		android:top="40dp" 
-		android:paddingRight="5dp"
-		android:paddingLeft="5dp">
+	    android:layout_width="match_parent"
+	    android:layout_height="40dp"
+	    android:layout_alignParentBottom="true"
+	    android:background="#85000000"
+	    android:orientation="vertical"
+	    android:paddingLeft="5dp"
+	    android:paddingRight="5dp" >
 		
 		<TextView
 		    android:id="@+id/textpart1"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
+		    android:layout_marginTop="5dp"
 		    android:gravity="left"
 		    android:shadowColor="#000"
 		    android:shadowDx="3"
 		    android:shadowDy="3"
 		    android:shadowRadius="6"
+		    android:text="1"
 		    android:textColor="#FFF"
 		    android:textSize="12sp"
 		    android:textStyle="bold" />
+
 		<TextView
 		    android:id="@+id/textpart2"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
 		    android:gravity="left"
+		    android:text="test"
 		    android:textColor="#FFF"
-		    android:textSize="10sp"/>
+		    android:textSize="10sp" />
+
 	</LinearLayout>
 </RelativeLayout>

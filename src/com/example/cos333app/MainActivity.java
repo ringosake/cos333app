@@ -1,6 +1,7 @@
 package com.example.cos333app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -19,11 +20,14 @@ public class MainActivity extends Activity {
 	    GridView gridview = (GridView) findViewById(R.id.gridview);
 	    gridview.setAdapter(new ImageAdapter(this));
 
-	    /*gridview.setOnItemClickListener(new OnItemClickListener() {
+	    gridview.setOnItemClickListener(new OnItemClickListener() {
+	    	@Override
 	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 	            Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+	            //Intent myIntent = new Intent(this, MapActivity.class);
+	            //startActivityForResult(myIntent, 0);
 	        }
-	    });*/
+	    });
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.example.cos333app;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -35,15 +36,13 @@ public class ImageAdapter extends BaseAdapter {
             view = new ImageView(mContext);
             LayoutInflater inflater = LayoutInflater.from(mContext);
             view=inflater.inflate(R.layout.gridobj, parent, false);
-            view.setLayoutParams(new GridView.LayoutParams(150, 150));
-            view.setPadding(5,5,5,5);
         } else {
             view = convertView;
         }
-
         ImageView imageView = (ImageView)view.findViewById(R.id.imagepart);
         imageView.setImageResource(mThumbIds[position]);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setMaxHeight(view.getWidth());
+        imageView.setMinimumHeight(view.getWidth());
         TextView textView = (TextView)view.findViewById(R.id.textpart1);
         textView.setText(String.valueOf(position));
         textView = (TextView)view.findViewById(R.id.textpart2);
