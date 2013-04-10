@@ -26,4 +26,10 @@ public class MapActivity extends Activity {
 		Intent intent = new Intent(this, MainActivity.class);
 	    startActivity(intent);
 	}
+	
+	public void goToMessages(View view) {
+	    // Do something in response to button
+		Intent intent = new Intent(this, MessageActivity.class);
+	    startActivity(intent);
+	}
 }

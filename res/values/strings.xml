@@ -8,5 +8,6 @@
     <string name="app_label">cos333app</string>
     <string name="title_activity_searchable">SearchableActivity</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_message">MessageActivity</string>
 
 </resources>
