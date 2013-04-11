@@ -19,12 +19,13 @@ package com.example.mapdemo;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.CameraUpdate;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.Toast;
 
 /**
  * This shows how UI settings can be toggled.
@@ -32,6 +33,8 @@ import android.widget.Toast;
 public class UiSettingsDemoActivity extends FragmentActivity {
     private GoogleMap mMap;
     private UiSettings mUiSettings;
+    GPSTracker gps;
+    double latitude = 0, longitude = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,93 +63,28 @@ public class UiSettingsDemoActivity extends FragmentActivity {
     }
 
     private void setUpMap() {
-        mMap.setMyLocationEnabled(true);
+    	gps = new GPSTracker(UiSettingsDemoActivity.this);
+    	// check if GPS enabled
+        if(gps.canGetLocation()){
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
+        }else{
+            // can't get location
+            // GPS or Network is not enabled
+            // Ask user to enable GPS/network in settings
+            gps.showSettingsAlert();
+        }
+        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You"));
+        CameraUpdate cameraUpdate= CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15);
+        mMap.moveCamera(cameraUpdate);
+    	
         mUiSettings = mMap.getUiSettings();
-        mMap.setMyLocationEnabled(true);
-        mUiSettings.setMyLocationButtonEnabled(true);
+        //mMap.setMyLocationEnabled(true);
+        //mUiSettings.setMyLocationButtonEnabled(true);
         mUiSettings.setScrollGesturesEnabled(true);
         mUiSettings.setZoomGesturesEnabled(true);
         mUiSettings.setZoomControlsEnabled(false);
     }
 
-    /**
-     * Checks if the map is ready (which depends on whether the Google Play services APK is
-     * available. This should be called prior to calling any methods on GoogleMap.
-     */
-    private boolean checkReady() {
-        if (mMap == null) {
-            Toast.makeText(this, R.string.map_not_ready, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
-    }
 
-    public void setZoomButtonsEnabled(View v) {
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables the zoom controls (+/- buttons in the bottom right of the map).
-        mUiSettings.setZoomControlsEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setCompassEnabled(View v) {
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables the compass (icon in the top left that indicates the orientation of the
-        // map).
-        mUiSettings.setCompassEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setMyLocationButtonEnabled(View v) {
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables the my location button (this DOES NOT enable/disable the my location
-        // dot/chevron on the map). The my location button will never appear if the my location
-        // layer is not enabled.
-        mUiSettings.setMyLocationButtonEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setMyLocationLayerEnabled(View v) {
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables the my location layer (i.e., the dot/chevron on the map). If enabled, it
-        // will also cause the my location button to show (if it is enabled); if disabled, the my
-        // location button will never show.
-        mMap.setMyLocationEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setScrollGesturesEnabled(View v) {
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables scroll gestures (i.e. panning the map).
-        mUiSettings.setScrollGesturesEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setZoomGesturesEnabled(View v) {
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables zoom gestures (i.e., double tap, pinch & stretch).
-        mUiSettings.setZoomGesturesEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setTiltGesturesEnabled(View v) {
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables tilt gestures.
-        mUiSettings.setTiltGesturesEnabled(((CheckBox) v).isChecked());
-    }
-
-    public void setRotateGesturesEnabled(View v) {
-        if (!checkReady()) {
-            return;
-        }
-        // Enables/disables rotate gestures.
-        mUiSettings.setRotateGesturesEnabled(((CheckBox) v).isChecked());
-    }
 }
