@@ -15,26 +15,32 @@
      limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/map_container"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-  <fragment
-    android:id="@+id/map"
+    android:id="@+id/map_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    class="com.google.android.gms.maps.SupportMapFragment"/>
-  <ScrollView
-    android:layout_width="wrap_content"
-    android:layout_height="175dp"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentLeft="true">
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:paddingRight="5dp"
-      android:background="#D000"
-      android:orientation="vertical">
-      <!-- <CheckBox
+    android:layout_height="match_parent" >
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.google.android.gms.maps.SupportMapFragment" />
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="175dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#D000"
+            android:orientation="vertical"
+            android:paddingRight="5dp" >
+
+            <!--
+      <CheckBox
         android:id="@+id/zoom_buttons_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,8 +55,10 @@
         android:layout_weight="1"
         android:checked="true"
         android:onClick="setCompassEnabled"
-        android:text="@string/compass"/>-->
-      <!-- <CheckBox
+        android:text="@string/compass"/>
+            -->
+            <!--
+      <CheckBox
         android:id="@+id/mylocationbutton_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,8 +73,10 @@
         android:layout_weight="1"
         android:checked="true"
         android:onClick="setMyLocationLayerEnabled"
-        android:text="@string/mylocation_layer"/> -->
-      <!-- <CheckBox
+        android:text="@string/mylocation_layer"/>
+            -->
+            <!--
+      <CheckBox
         android:id="@+id/scroll_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -97,7 +107,19 @@
         android:layout_weight="1"
         android:checked="true"
         android:onClick="setRotateGesturesEnabled"
-        android:text="@string/rotate"/>-->
-    </LinearLayout>
-  </ScrollView>
+        android:text="@string/rotate"/>
+            -->
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- <Button
+        android:id="@+id/btnShowLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="49dp"
+        android:layout_marginTop="116dp"
+        android:layout_toRightOf="@+id/scrollView1"
+        android:text="show" /> -->
+
 </RelativeLayout>
