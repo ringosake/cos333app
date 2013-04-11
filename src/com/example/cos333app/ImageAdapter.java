@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,6 +40,11 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             view = convertView;
         }
+        if (position==(mThumbIds.length - 1)) { // if we're at a position beyond all the images?
+        	Context context = parent.getContext();
+            Button button = new Button(context);
+            return button;
+        }	
         ImageView imageView = (ImageView)view.findViewById(R.id.imagepart);
         imageView.setImageResource(mThumbIds[position]);
         imageView.setMaxHeight(view.getWidth());
@@ -62,6 +68,7 @@ public class ImageAdapter extends BaseAdapter {
             R.drawable.sample_0, R.drawable.sample_1,
             R.drawable.sample_2, R.drawable.sample_3,
             R.drawable.sample_4, R.drawable.sample_5,
-            R.drawable.sample_6, R.drawable.sample_7
+            R.drawable.sample_6, R.drawable.sample_7,
+            -1 // a placeholder. this will need to be changed when we can actually add groups.
     };
 }
