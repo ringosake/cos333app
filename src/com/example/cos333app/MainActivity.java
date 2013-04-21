@@ -1,5 +1,7 @@
 package com.example.cos333app;
 
+import library.UserFunctions;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,27 +9,46 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.GridView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
-
+	UserFunctions userFunctions;
+	Button btnLogout;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	    setContentView(R.layout.activity_main);
-
-	    GridView gridview = (GridView) findViewById(R.id.gridview);
-	    gridview.setAdapter(new ImageAdapter(this));
-
-	    /*gridview.setOnItemClickListener(new OnItemClickListener() {
-	    	@Override
-	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-	            Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-	            //Intent myIntent = new Intent(this, MapActivity.class);
-	            //startActivityForResult(myIntent, 0);
-	        }
-	    });*/
+	    
+		// Check login status in database
+        userFunctions = new UserFunctions();
+        if(userFunctions.isUserLoggedIn(getApplicationContext())){
+       // user already logged in show databoard
+            setContentView(R.layout.activity_main);
+            GridView gridview = (GridView) findViewById(R.id.gridview);
+    	    gridview.setAdapter(new ImageAdapter(this));
+    	    
+    	    btnLogout = (Button) findViewById(R.id.button_logout);
+    	    
+            btnLogout.setOnClickListener(new View.OnClickListener() {
+ 
+                public void onClick(View arg0) {
+                    userFunctions.logoutUser(getApplicationContext());
+                    Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+                    login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(login);
+                    // Closing dashboard screen
+                    finish();
+                }
+            });
+    	    
+        }else{
+            // user is not logged in show login screen
+            Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+            login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(login);
+            // Closing dashboard screen
+            finish();
+        }
 	}
 
 	public void openMap(View view) {
@@ -42,5 +63,4 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
 }
