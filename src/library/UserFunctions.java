@@ -17,15 +17,17 @@ public class UserFunctions {
     // use http://10.0.2.2/ to connect to your localhost ie http://localhost/
     private static String loginURL = "http://murmuring-inlet-4150.herokuapp.com/";
     private static String registerURL = "http://murmuring-inlet-4150.herokuapp.com/";
+    private static String sendRegEmailURL = "http://murmuring-inlet-4150.herokuapp.com/";
  
     private static String login_tag = "login";
     private static String register_tag = "register";
- 
+    private static String sendRegEmail_tag = "send_reg_email";
+    
     // constructor
     public UserFunctions(){
         jsonParser = new JSONParser();
     }
- 
+    
     /**
      * function make Login Request
      * @param email
@@ -39,7 +41,7 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("password", password));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         // return json
-        // Log.e("JSON", json.toString());
+     // Log.e("JSON", json.toString());
         return json;
     }
  
@@ -59,6 +61,21 @@ public class UserFunctions {
  
         // getting JSON Object
         JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+        // return json
+        return json;
+    }
+    
+    /**
+     * function make send registration email when a user signs up
+     * @param email
+     * @param password
+     * */
+    public JSONObject sendRegEmail(String email){
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", sendRegEmail_tag));
+        params.add(new BasicNameValuePair("email", email));
+        JSONObject json = jsonParser.getJSONFromUrl(sendRegEmailURL, params);
         // return json
         return json;
     }

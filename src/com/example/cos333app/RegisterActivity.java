@@ -1,11 +1,16 @@
 package com.example.cos333app;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
  
 import library.DatabaseHandler;
 import library.UserFunctions;
  
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,10 +41,15 @@ public class RegisterActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
- 
+        
+        String emailHint = getUsername();
+        if (emailHint == null)
+        	emailHint = "";
+        
         // Importing all assets like buttons, text fields
         inputFullName = (EditText) findViewById(R.id.registerName);
         inputEmail = (EditText) findViewById(R.id.registerEmail);
+        inputEmail.setHint(emailHint);
         inputPassword = (EditText) findViewById(R.id.registerPassword);
         btnRegister = (Button) findViewById(R.id.btnRegister);
         btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
@@ -53,7 +63,7 @@ public class RegisterActivity extends Activity {
                 String password = inputPassword.getText().toString();
                 UserFunctions userFunction = new UserFunctions();
                 JSONObject json = userFunction.registerUser(name, email, password);
- 
+                
                 // check for login response
                 try {
                     if (json.getString(KEY_SUCCESS) != null) {
@@ -68,6 +78,18 @@ public class RegisterActivity extends Activity {
                             // Clear all previous data in database
                             userFunction.logoutUser(getApplicationContext());
                             db.addUser(json_user.getString(KEY_NAME), json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));
+                            
+                            // send registration email
+                            JSONObject json2 = userFunction.sendRegEmail(email);
+                            res = json2.getString(KEY_SUCCESS);
+                            // TODO: link for sending new verif email on failure. can also
+                            // send new one on success
+                            //for now:
+                            if (Integer.parseInt(res) == 1)
+                            	registerErrorMsg.setText("Success: verification email sent!!!");
+                            else
+                            	registerErrorMsg.setText("Error sending verification email");
+
                             // Launch Dashboard Screen
                             Intent dashboard = new Intent(getApplicationContext(), MainActivity.class);
                             // Close all views before launching Dashboard
@@ -98,4 +120,27 @@ public class RegisterActivity extends Activity {
             }
         });
     }
+    
+    public String getUsername(){
+        AccountManager manager = AccountManager.get(this); 
+        Account[] accounts = manager.getAccountsByType("com.google"); 
+        List<String> possibleEmails = new LinkedList<String>();
+
+        for (Account account : accounts) {
+          // TODO: Check possibleEmail against an email regex or treat
+          // account.name as an email address only for certain account.type values.
+          possibleEmails.add(account.name);
+        }
+
+        if(!possibleEmails.isEmpty() && possibleEmails.get(0) != null){
+            String email = possibleEmails.get(0);
+            String[] parts = email.split("@");
+            if(parts.length > 0 && parts[0] != null)
+                return email;
+            else
+                return null;
+        }else
+            return null;
+    }
+    
 }
