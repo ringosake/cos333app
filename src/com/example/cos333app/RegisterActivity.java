@@ -47,9 +47,6 @@ public class RegisterActivity extends Activity {
         	emailHint = "";
         
         // Importing all assets like buttons, text fields
-        inputFullName = (EditText) findViewById(R.id.registerName);
-        inputEmail = (EditText) findViewById(R.id.registerEmail);
-        inputEmail.setHint(emailHint);
         inputPassword = (EditText) findViewById(R.id.registerPassword);
         btnRegister = (Button) findViewById(R.id.btnRegister);
         btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);

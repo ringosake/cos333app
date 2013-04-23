@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#3f3f3f" >
+    android:background="#eeeeee" >
  
     <LinearLayout
         android:layout_width="fill_parent"
@@ -22,17 +22,7 @@
 
         <!--  Name Label -->
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Full Name"
-            android:textColor="#111111" />
-
         <!--  Name TextField -->
-        <EditText
-            android:id="@+id/registerName"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
  
         <!--  Email Label -->
 
@@ -43,9 +33,9 @@
             android:textColor="#111111" />
 
         <!--  Email TextField -->
-        <EditText
-            android:id="@+id/registerEmail"
-            android:layout_width="fill_parent"
+        <Spinner
+            android:id="@+id/accounts_tester_account_types_spinner_reg"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
  
         <!--  Password Label -->

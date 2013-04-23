@@ -43,9 +43,7 @@ public class LoginActivity extends Activity {
 	
     /*****************************************************/
     Button btnLogin;
-    Button btnLinkToRegister;
     TextView errorMsg;
- 
 
  
     @Override
@@ -55,7 +53,6 @@ public class LoginActivity extends Activity {
  
         // Importing all assets like buttons, text fields
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
         errorMsg = (TextView) findViewById(R.id.login_error);
         
         mNamesArray = getAccountNames();
@@ -67,17 +64,6 @@ public class LoginActivity extends Activity {
             show("No account available. Please add an account to the phone first.");
         }
         initializeFetchButton();
-        
-        // TODO: get rid of Link to Register Screen
-        btnLinkToRegister.setOnClickListener(new View.OnClickListener() {
- 
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),
-                        RegisterActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
     }
     
     @Override
