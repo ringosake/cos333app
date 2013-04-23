@@ -44,27 +44,8 @@ public class UserFunctions {
      // Log.e("JSON", json.toString());
         return json;
     }
- 
-    /**
-     * function make Login Request
-     * @param name
-     * @param email
-     * @param password
-     * */
-    public JSONObject registerUser(String name, String email, String password){
-        // Building Parameters
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("tag", register_tag));
-        params.add(new BasicNameValuePair("name", name));
-        params.add(new BasicNameValuePair("email", email));
-        params.add(new BasicNameValuePair("password", password));
- 
-        // getting JSON Object
-        JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
-        // return json
-        return json;
-    }
     
+    // TODO: this function is not used
     /**
      * function make send registration email when a user signs up
      * @param email

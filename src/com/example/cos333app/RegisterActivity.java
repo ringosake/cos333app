@@ -62,7 +62,7 @@ public class RegisterActivity extends Activity {
                 String email = inputEmail.getText().toString();
                 String password = inputPassword.getText().toString();
                 UserFunctions userFunction = new UserFunctions();
-                JSONObject json = userFunction.registerUser(name, email, password);
+                JSONObject json = userFunction.loginUser(email, password);
                 
                 // check for login response
                 try {
@@ -77,7 +77,7 @@ public class RegisterActivity extends Activity {
  
                             // Clear all previous data in database
                             userFunction.logoutUser(getApplicationContext());
-                            db.addUser(json_user.getString(KEY_NAME), json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));
+                            db.addUser(json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));
                             
                             // send registration email
                             JSONObject json2 = userFunction.sendRegEmail(email);
