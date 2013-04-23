@@ -44,16 +44,9 @@ public class LoginActivity extends Activity {
     /*****************************************************/
     Button btnLogin;
     Button btnLinkToRegister;
-    EditText inputPassword;
     TextView errorMsg;
  
-    // JSON Response node names
-    private static String KEY_SUCCESS = "success";
-    private static String KEY_ERROR = "error";
-    private static String KEY_ERROR_MSG = "error_msg";
-    private static String KEY_UID = "uid";
-    private static String KEY_EMAIL = "email";
-    private static String KEY_CREATED_AT = "created_at";
+
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,11 +54,9 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
  
         // Importing all assets like buttons, text fields
-        inputPassword = (EditText) findViewById(R.id.loginPassword);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnLinkToRegister = (Button) findViewById(R.id.btnLinkToRegisterScreen);
         errorMsg = (TextView) findViewById(R.id.login_error);
-        errorMsg.setText("");
         
         mNamesArray = getAccountNames();
         mAccountTypesSpinner = initializeSpinner(
@@ -115,49 +106,11 @@ public class LoginActivity extends Activity {
                 if (accountIndex < 0)
                     return;
                 mEmail = mNamesArray[accountIndex];
-                String password = inputPassword.getText().toString();
-                UserFunctions userFunction = new UserFunctions();
+                
                 new library.GetNameInForeground(LoginActivity.this, mEmail, SCOPE,
                         REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
                 
-                if ("".equals(errorMsg.getText())) {
-	                // check for login response
-	                try {
-	                	JSONObject json = userFunction.loginUser(mEmail, password);
-	            		if (json.getString(KEY_SUCCESS) != null) {
-	            			errorMsg.setText("");
-	                        String res = json.getString(KEY_SUCCESS);
-	                        if(Integer.parseInt(res) == 1){
-	                            // user successfully registred
-	                            // Store user details in SQLite Database
-	                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-	                            JSONObject json_user = json.getJSONObject("user");
-	 
-	                            // Clear all previous data in database
-	                            userFunction.logoutUser(getApplicationContext());
-	                            db.addUser(json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));
-	
-	                        	// Launch Dashboard Screen
-	                            Intent dashboard = new Intent(getApplicationContext(), MainActivity.class);
-	
-	                            // Close all views before launching Dashboard
-	                            dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	                            startActivity(dashboard);
-	
-	                            // Close Login Screen
-	                            finish();
-	                        } else {
-	                        	// display the error
-	                        	if (json.getString(KEY_ERROR_MSG) != null) {
-	                        		res = json.getString(KEY_ERROR_MSG);
-	                        		errorMsg.setText(res);
-	                        	}
-	                        }
-	                    }
-	                } catch (JSONException e) {
-	                    e.printStackTrace();
-	                }
-                }
+        		
             }
         });
     }
@@ -200,6 +153,7 @@ public class LoginActivity extends Activity {
             }
         });
     }
+    
 
     /**
      * This method is a hook for background threads and async tasks that need to launch a dialog.

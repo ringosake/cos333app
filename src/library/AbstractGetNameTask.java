@@ -17,10 +17,15 @@
 package library;
 
 import com.example.cos333app.LoginActivity;
+import com.example.cos333app.MainActivity;
+import com.example.cos333app.R;
 import com.google.android.gms.auth.GoogleAuthUtil;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +48,17 @@ public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void>{
     protected String mScope;
     protected String mEmail;
     protected int mRequestCode;
-
+    
+    // JSON Response node names
+    private static String KEY_SUCCESS = "success";
+    private static String KEY_ERROR = "error";
+    private static String KEY_ERROR_MSG = "error_msg";
+    private static String KEY_UID = "uid";
+    private static String KEY_EMAIL = "email";
+    private static String KEY_CREATED_AT = "created_at";
+    
+    EditText inputPassword;
+    
     AbstractGetNameTask(LoginActivity activity, String email, String scope, int requestCode) {
         this.mActivity = activity;
         this.mScope = scope;
@@ -95,8 +110,51 @@ public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void>{
         if (sc == 200) {
           InputStream is = con.getInputStream();
           String name = getFirstName(readResponse(is));
-          mActivity.show("Hello " + name + "!");
+          //mActivity.show("Hello " + name + "!");
           is.close();
+          
+          // check for login response
+          inputPassword = (EditText) mActivity.findViewById(R.id.loginPassword);
+          String password = inputPassword.getText().toString();
+          UserFunctions userFunctions = new UserFunctions();
+          try {
+          	JSONObject json = userFunctions.loginUser(mEmail, password);
+      		if (json.getString(KEY_SUCCESS) != null) {
+      			
+                  String res = json.getString(KEY_SUCCESS);
+                  if(Integer.parseInt(res) == 1){
+                      // user successfully registred
+                      // Store user details in SQLite Database
+                      DatabaseHandler db = new DatabaseHandler(mActivity.getApplicationContext());
+                      JSONObject json_user = json.getJSONObject("user");
+
+                      // Clear all previous data in database
+                      userFunctions.logoutUser(mActivity.getApplicationContext());
+                      db.addUser(json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));
+                  
+                      // Check login status in database
+                      if (userFunctions.isUserLoggedIn(mActivity.getApplicationContext())) {
+                      		// Launch Dashboard Screen
+                          	Intent dashboard = new Intent(mActivity.getApplicationContext(), MainActivity.class);
+
+                          	// Close all views before launching Dashboard
+                          	dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                          	mActivity.startActivity(dashboard);
+
+                          	// Close Login Screen
+                          	mActivity.finish();
+                      }
+                  } else {
+                  	// display the error
+                  	if (json.getString(KEY_ERROR_MSG) != null) {
+                  		res = json.getString(KEY_ERROR_MSG);
+                  		mActivity.show(res);
+                  	}
+                  }
+              }
+          } catch (JSONException e) {
+              e.printStackTrace();
+          }
           return;
         } else if (sc == 401) {
             GoogleAuthUtil.invalidateToken(mActivity, token);

@@ -32,12 +32,12 @@ public class MainActivity extends Activity {
             btnLogout.setOnClickListener(new View.OnClickListener() {
  
                 public void onClick(View arg0) {
-                    /*userFunctions.logoutUser(getApplicationContext());
+                    userFunctions.logoutUser(getApplicationContext());
                     Intent login = new Intent(getApplicationContext(), LoginActivity.class);
                     login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(login);
                     // Closing dashboard screen
-                    finish();*/
+                    finish();
                 }
             });
     	    
