@@ -27,8 +27,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
  
 public class LoginActivity extends Activity {
-    private static final String TAG = "PlayHelloActivity";
-    private static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile";
+    private static final String TAG = "LoginActivity";
+    private static final String SCOPE = "audience:server:client_id:581942024733-55depc52o3jkfu57jerqs30gd6hu7okv.apps.googleusercontent.com"; //+
+    		//" https://www.googleapis.com/auth/userinfo.profile";
 
     private AccountManager mAccountManager;
     private Spinner mAccountTypesSpinner;

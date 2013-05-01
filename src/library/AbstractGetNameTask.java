@@ -104,66 +104,56 @@ public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void>{
           // error has already been handled in fetchToken()
           return;
         }
-        URL url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + token);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        int sc = con.getResponseCode();
-        if (sc == 200) {
-          InputStream is = con.getInputStream();
-          String name = getFirstName(readResponse(is));
-          //mActivity.show("Hello " + name + "!");
-          is.close();
-          
-          // check for login response
-          inputPassword = (EditText) mActivity.findViewById(R.id.loginPassword);
-          String password = inputPassword.getText().toString();
-          UserFunctions userFunctions = new UserFunctions();
-          try {
-          	JSONObject json = userFunctions.loginUser(mEmail, password);
-      		if (json.getString(KEY_SUCCESS) != null) {
-      			
-                  String res = json.getString(KEY_SUCCESS);
-                  if(Integer.parseInt(res) == 1){
-                      // user successfully registred
-                      // Store user details in SQLite Database
-                      DatabaseHandler db = new DatabaseHandler(mActivity.getApplicationContext());
-                      JSONObject json_user = json.getJSONObject("user");
-
-                      // Clear all previous data in database
-                      userFunctions.logoutUser(mActivity.getApplicationContext());
-                      db.addUser(json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));
-                  
-                      // Check login status in database
-                      if (userFunctions.isUserLoggedIn(mActivity.getApplicationContext())) {
-                      		// Launch Dashboard Screen
-                          	Intent dashboard = new Intent(mActivity.getApplicationContext(), MainActivity.class);
-
-                          	// Close all views before launching Dashboard
-                          	dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                          	mActivity.startActivity(dashboard);
-
-                          	// Close Login Screen
-                          	mActivity.finish();
-                      }
-                  } else {
-                  	// display the error
-                  	if (json.getString(KEY_ERROR_MSG) != null) {
-                  		res = json.getString(KEY_ERROR_MSG);
-                  		mActivity.show(res);
-                  	}
-                  }
-              }
-          } catch (JSONException e) {
-              e.printStackTrace();
-          }
-          return;
-        } else if (sc == 401) {
-            GoogleAuthUtil.invalidateToken(mActivity, token);
-            onError("Server auth error, please try again.", null);
-            Log.i(TAG, "Server auth error: " + readResponse(con.getErrorStream()));
-            return;
-        } else {
-          onError("Server returned the following error code: " + sc, null);
-          return;
+        
+        UserFunctions userFunctions = new UserFunctions();
+        mActivity.show("0");
+        JSONObject json = userFunctions.loginUser(mEmail, token);
+        mActivity.show("1");
+        //InputStream is = con.getInputStream();
+        //String name = getFirstName(readResponse(is));
+        //mActivity.show("Hello " + name + "!");
+        //is.close();
+        try {
+	  		if (json.getString(KEY_SUCCESS) != null) {
+	  			mActivity.show("2");
+	  			String res = json.getString(KEY_SUCCESS);
+	  			if(Integer.parseInt(res) == 1){
+	  				// user successfully registred
+	  				// Store user details in SQLite Database
+	  				DatabaseHandler db = new DatabaseHandler(mActivity.getApplicationContext());
+	  				JSONObject json_user = json.getJSONObject("user");
+		
+	  				// Clear all previous data in database
+	  				userFunctions.logoutUser(mActivity.getApplicationContext());
+	  				db.addUser(json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));
+		      
+	  				// Check login status in database
+	  				if (userFunctions.isUserLoggedIn(mActivity.getApplicationContext())) {
+	  					// Launch Dashboard Screen
+		              	Intent dashboard = new Intent(mActivity.getApplicationContext(), MainActivity.class);
+		
+		              	// Close all views before launching Dashboard
+		              	dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	                  	mActivity.startActivity(dashboard);
+	
+	                  	// Close Login Screen
+	                  	mActivity.finish();
+		            }
+		        } else {
+		        	mActivity.show("3");
+		        	GoogleAuthUtil.invalidateToken(mActivity, token);
+		          	// display the error
+		          	if (json.getString(KEY_ERROR_MSG) != null) {
+		          		res = json.getString(KEY_ERROR_MSG);
+		          		mActivity.show(res);
+		          	}
+		        }
+		    }
+        } catch (JSONException e) {
+        	mActivity.show("4");
+            e.printStackTrace();
+        } catch (Exception e) {
+        	mActivity.show("5");
         }
     }
 

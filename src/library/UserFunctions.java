@@ -33,12 +33,12 @@ public class UserFunctions {
      * @param email
      * @param password
      * */
-    public JSONObject loginUser(String email, String password){
+    public JSONObject loginUser(String email, String token){
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", login_tag));
         params.add(new BasicNameValuePair("email", email));
-        params.add(new BasicNameValuePair("password", password));
+        params.add(new BasicNameValuePair("access_token", token));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         // return json
      // Log.e("JSON", json.toString());
