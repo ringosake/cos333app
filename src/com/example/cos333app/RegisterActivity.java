@@ -1,110 +1,88 @@
 package com.example.cos333app;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
- 
-import library.DatabaseHandler;
-import library.UserFunctions;
- 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
+import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
  
 public class RegisterActivity extends Activity {
+    private static final String TAG = "RegisterActivity";
+    private static final String SCOPE = "audience:server:client_id:581942024733-55depc52o3jkfu57jerqs30gd6hu7okv.apps.googleusercontent.com"; //+
+    		//" https://www.googleapis.com/auth/userinfo.profile";
+
+    private AccountManager mAccountManager;
+    private Spinner mAccountTypesSpinner;
+    static final int REQUEST_CODE_RECOVER_FROM_AUTH_ERROR = 1001;
+    static final int REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR = 1002;
+    
+    private String[] mNamesArray;
+    private String mEmail;
+    private String mNumber;
+    private String mName;
+    private String mCode;
+    boolean visited = false;
+    private AlertDialog alert;
+    
+    public static String TYPE_KEY = "type_key";
+    public static enum Type {FOREGROUND, BACKGROUND, BACKGROUND_WITH_SYNC}
+	
+    /*****************************************************/
     Button btnRegister;
+    TextView errorMsg;
     Button btnLinkToLogin;
-    EditText inputFullName;
-    EditText inputEmail;
-    EditText inputPassword;
-    TextView registerErrorMsg;
- 
-    // JSON Response node names
-    private static String KEY_SUCCESS = "success";
-    private static String KEY_ERROR = "error";
-    private static String KEY_ERROR_MSG = "error_msg";
-    private static String KEY_UID = "uid";
-    private static String KEY_NAME = "name";
-    private static String KEY_EMAIL = "email";
-    private static String KEY_CREATED_AT = "created_at";
+    EditText name;
+    EditText phoneNumber;
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        
-        String emailHint = getUsername();
-        if (emailHint == null)
-        	emailHint = "";
-        
+ 
         // Importing all assets like buttons, text fields
-        inputPassword = (EditText) findViewById(R.id.registerPassword);
         btnRegister = (Button) findViewById(R.id.btnRegister);
+        errorMsg = (TextView) findViewById(R.id.register_error);
         btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);
-        registerErrorMsg = (TextView) findViewById(R.id.register_error);
- 
-        // Register Button Click event
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                String name = inputFullName.getText().toString();
-                String email = inputEmail.getText().toString();
-                String password = inputPassword.getText().toString();
-                UserFunctions userFunction = new UserFunctions();
-                JSONObject json = userFunction.loginUser(email, password);
-                
-                // check for login response
-                try {
-                    if (json.getString(KEY_SUCCESS) != null) {
-                        registerErrorMsg.setText("");
-                        String res = json.getString(KEY_SUCCESS);
-                        if(Integer.parseInt(res) == 1){
-                            // user successfully registred
-                            // Store user details in SQLite Database
-                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                            JSONObject json_user = json.getJSONObject("user");
- 
-                            // Clear all previous data in database
-                            userFunction.logoutUser(getApplicationContext());
-                            db.addUser(json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));
-                            
-                            // send registration email
-                            JSONObject json2 = userFunction.sendRegEmail(email);
-                            res = json2.getString(KEY_SUCCESS);
-                            // TODO: link for sending new verif email on failure. can also
-                            // send new one on success
-                            //for now:
-                            if (Integer.parseInt(res) == 1)
-                            	registerErrorMsg.setText("Success: verification email sent!!!");
-                            else
-                            	registerErrorMsg.setText("Error sending verification email");
-
-                            // Launch Dashboard Screen
-                            Intent dashboard = new Intent(getApplicationContext(), MainActivity.class);
-                            // Close all views before launching Dashboard
-                            dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(dashboard);
-                            // Close Registration Screen
-                            finish();
-                        }else{
-                            // Error in registration
-                            registerErrorMsg.setText("Error occured in registration");
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
- 
+        name = (EditText) findViewById(R.id.editText_name);
+        phoneNumber = (EditText) findViewById(R.id.editText_number);
+        
+        mNamesArray = getAccountNames();
+        mAccountTypesSpinner = initializeSpinner(
+                R.id.accounts_tester_account_types_spinner_reg, mNamesArray);
+        if (mAccountTypesSpinner.getSelectedItemPosition() < 0) {
+            // this happens when the sample is run in an emulator which has no google account
+            // added yet.
+            show("No account available. Please add an account to the phone first.");
+        }
+        
+        // try to fill in the phone number
+        TelephonyManager tMgr =(TelephonyManager)getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        if (tMgr != null) {
+        	String tmpnum = tMgr.getLine1Number();
+        	if (tmpnum != null)
+        		phoneNumber.setText(tmpnum);
+        }
+        
+        initializeFetchButton();
+        
         // Link to Login Screen
         btnLinkToLogin.setOnClickListener(new View.OnClickListener() {
  
@@ -118,26 +96,206 @@ public class RegisterActivity extends Activity {
         });
     }
     
-    public String getUsername(){
-        AccountManager manager = AccountManager.get(this); 
-        Account[] accounts = manager.getAccountsByType("com.google"); 
-        List<String> possibleEmails = new LinkedList<String>();
-
-        for (Account account : accounts) {
-          // TODO: Check possibleEmail against an email regex or treat
-          // account.name as an email address only for certain account.type values.
-          possibleEmails.add(account.name);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_RECOVER_FROM_AUTH_ERROR) {
+            handleAuthorizeResult(resultCode, data);
+            return;
         }
-
-        if(!possibleEmails.isEmpty() && possibleEmails.get(0) != null){
-            String email = possibleEmails.get(0);
-            String[] parts = email.split("@");
-            if(parts.length > 0 && parts[0] != null)
-                return email;
-            else
-                return null;
-        }else
-            return null;
+        super.onActivityResult(requestCode, resultCode, data);
     }
     
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+      super.onSaveInstanceState(savedInstanceState);
+      // Save UI state changes to the savedInstanceState.
+      // This bundle will be passed to onCreate if the process is
+      // killed and restarted.
+      savedInstanceState.putBoolean("visited", visited);
+      savedInstanceState.putString("code", mCode);
+      // etc.
+    }
+    
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      // Restore UI state from the savedInstanceState.
+      // This bundle has also been passed to onCreate.
+      visited = savedInstanceState.getBoolean("visited");
+      mCode = savedInstanceState.getString("code");
+    }
+    @Override
+    protected void onResume() 
+    {
+    	 super.onResume();
+    	 if (visited) {
+    		 alert.show();
+    	 }
+    }
+    
+    private Spinner initializeSpinner(int id, String[] values) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(RegisterActivity.this,
+                android.R.layout.simple_spinner_item, values);
+        Spinner spinner = (Spinner) findViewById(id);
+        spinner.setAdapter(adapter);
+        return spinner;
+    }
+    
+    private String sendVerif(String phoneNumber) {
+	    GenerateRandomString grs = new GenerateRandomString();
+	    String code = grs.getAlphaNumeric(5);
+	    SmsManager smsManager = SmsManager.getDefault();
+	    smsManager.sendTextMessage(phoneNumber, null, ("Your verification code is " + code), null, null);
+	    return code;
+    }
+    
+    private void initializeFetchButton() {
+        Button getToken = (Button) findViewById(R.id.btnRegister);
+        
+        getToken.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int accountIndex = mAccountTypesSpinner.getSelectedItemPosition();
+                if (accountIndex < 0)
+                    return;
+                mEmail = mNamesArray[accountIndex];
+                mName = name.getText().toString();
+                String numStrip = PhoneNumberUtils.extractNetworkPortion(phoneNumber.getText().toString());
+                if (PhoneNumberUtils.isWellFormedSmsAddress(numStrip)) {
+                	mNumber = numStrip;
+                	if (!visited)
+                		mCode = sendVerif(mNumber);
+                	visited = true;
+                	
+                	// Set an EditText view to get user input 
+                	final EditText input = new EditText(RegisterActivity.this);
+                	
+                	alert = new AlertDialog.Builder(RegisterActivity.this)
+                    .setView(input)
+                    .setTitle("Verification")
+                    .setMessage("Enter the verification code sent to your phone number:")
+                    .setPositiveButton(android.R.string.ok,
+                            new Dialog.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface d, int which) {
+                                    //Do nothing here. We override the onclick
+                                }
+                            })
+                    .setNeutralButton("Send code",
+                            new Dialog.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface d, int which) {
+                                    //Do nothing here. We override the onclick
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create();
+
+		            alert.setOnShowListener(new DialogInterface.OnShowListener() {
+		
+		                @Override
+		                public void onShow(DialogInterface dialog) {
+		
+		                    Button b = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+		                    b.setOnClickListener(new View.OnClickListener() {
+		
+		                        @Override
+		                        public void onClick(View view) {
+		                        	String value = input.getText().toString();
+		                			if (value.equalsIgnoreCase(mCode)) {
+		                				new com.example.cos333app.RegisterThread(RegisterActivity.this, mEmail, mName, mNumber, SCOPE,
+		                            			REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
+		                				alert.dismiss();
+		                			} else
+		                				alert.setMessage("Incorrect verification code");
+		                        }
+		                    });
+		                    Button b1 = alert.getButton(AlertDialog.BUTTON_NEUTRAL);
+		                    b1.setOnClickListener(new View.OnClickListener() {
+		
+		                        @Override
+		                        public void onClick(View view) {
+		                        	mCode = sendVerif(mNumber);
+		                        }
+		                    });
+		                }
+		            });
+		            alert.show();
+                	
+                } else {
+                	show("Invalid phone number");
+                }
+            }
+        });
+    }
+    
+    private String[] getAccountNames() {
+        mAccountManager = AccountManager.get(this);
+        Account[] accounts = mAccountManager.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
+        String[] names = new String[accounts.length];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = accounts[i].name;
+        }
+        return names;
+    }
+        
+    private void handleAuthorizeResult(int resultCode, Intent data) {
+        if (data == null) {
+            show("Unknown error, click the button again");
+            return;
+        }
+        if (resultCode == RESULT_OK) {
+            Log.i(TAG, "Retrying");
+            new com.example.cos333app.RegisterThread(this, mEmail, mName, mNumber, SCOPE, REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
+            return;
+        }
+        if (resultCode == RESULT_CANCELED) {
+            show("User rejected authorization.");
+            return;
+        }
+        show("Unknown error, click the button again");
+    }
+    /**
+     * This method is a hook for background threads and async tasks that need to update the UI.
+     * It does this by launching a runnable under the UI thread.
+     */
+    public void show(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+            	errorMsg.setText(message);
+            }
+        });
+    }
+    
+
+    /**
+     * This method is a hook for background threads and async tasks that need to launch a dialog.
+     * It does this by launching a runnable under the UI thread.
+     */
+    public void showErrorDialog(final int code) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+              Dialog d = GooglePlayServicesUtil.getErrorDialog(
+                  code,
+                  RegisterActivity.this,
+                  REQUEST_CODE_RECOVER_FROM_PLAY_SERVICES_ERROR);
+              d.show();
+            }
+        });
+    }
+    
+    private class GenerateRandomString {
+    	private static final String ALPHA_NUM = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    	public String getAlphaNumeric(int len) {
+    		StringBuffer sb = new StringBuffer(len);
+    		for (int i = 0; i < len; i++) {
+    			int ndx = (int) (Math.random() * ALPHA_NUM.length());
+    			sb.append(ALPHA_NUM.charAt(ndx));
+    		}
+    		return sb.toString();
+    	}
+    }
 }

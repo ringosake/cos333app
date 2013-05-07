@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package library;
+package com.example.cos333app;
 
-import com.example.cos333app.LoginActivity;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
@@ -24,13 +23,14 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 
 import java.io.IOException;
 
+
 /**
  * This example shows how to fetch tokens if you are creating a foreground task/activity and handle
  * auth exceptions.
  */
-public class GetNameInForeground extends AbstractGetNameTask {
+public class LoginThread extends LoginThreadAbs {
 
-  public GetNameInForeground(LoginActivity activity, String email, String scope, int requestCode) {
+  public LoginThread(LoginActivity activity, String email, String scope, int requestCode) {
       super(activity, email, scope, requestCode);
   }
 

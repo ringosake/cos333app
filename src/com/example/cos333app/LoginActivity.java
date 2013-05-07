@@ -1,12 +1,4 @@
 package com.example.cos333app;
-import java.util.LinkedList;
-import java.util.List;
-
-import library.DatabaseHandler;
-import library.UserFunctions;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -65,6 +57,17 @@ public class LoginActivity extends Activity {
             show("No account available. Please add an account to the phone first.");
         }
         initializeFetchButton();
+        
+        Button toReg = (Button) findViewById(R.id.btnLinkToRegisterScreen);
+        toReg.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+            	i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(i);
+                finish();
+            }
+        });
     }
     
     @Override
@@ -94,7 +97,7 @@ public class LoginActivity extends Activity {
                     return;
                 mEmail = mNamesArray[accountIndex];
                 
-                new library.GetNameInForeground(LoginActivity.this, mEmail, SCOPE,
+                new com.example.cos333app.LoginThread(LoginActivity.this, mEmail, SCOPE,
                         REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
                 
         		
@@ -119,7 +122,7 @@ public class LoginActivity extends Activity {
         }
         if (resultCode == RESULT_OK) {
             Log.i(TAG, "Retrying");
-            new library.GetNameInForeground(this, mEmail, SCOPE, REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
+            new com.example.cos333app.LoginThread(this, mEmail, SCOPE, REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
             return;
         }
         if (resultCode == RESULT_CANCELED) {

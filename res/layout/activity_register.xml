@@ -29,10 +29,24 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="#111111" />
+
+        <EditText
+            android:id="@+id/editText_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:text="Email"
             android:textColor="#111111" />
 
         <!--  Email TextField -->
+
         <Spinner
             android:id="@+id/accounts_tester_account_types_spinner_reg"
             android:layout_width="match_parent"
@@ -40,27 +54,25 @@
  
         <!--  Password Label -->
 
+        <!--  Password TextField -->
+ 
+        <!--  Error message -->
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dip"
-            android:text="Password"
+            android:text="Phone Number"
             android:textColor="#111111" />
 
-        <!--  Password TextField -->
         <EditText
-            android:id="@+id/registerPassword"
-            android:layout_width="fill_parent"
+            android:id="@+id/editText_number"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:password="true" />
- 
-        <!--  Error message -->
-        <TextView android:id="@+id/register_error"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#e30000"
-                    android:padding="10dip"
-                    android:textStyle="bold"/>
+            android:ems="10"
+            android:inputType="phone" >
+
+            <requestFocus />
+        </EditText>
  
         <!--  Login Button -->
         <Button
@@ -71,6 +83,15 @@
             android:text="Register" />
  
         <!--  Link to Login Screen -->
+
+        <TextView
+            android:id="@+id/register_error"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dip"
+            android:textColor="#e30000"
+            android:textStyle="bold" />
+
         <Button
             android:id="@+id/btnLinkToLoginScreen"
             android:layout_width="fill_parent"
