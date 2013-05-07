@@ -155,7 +155,7 @@ public abstract class RegisterThreadAbs extends AsyncTask<Void, Void, Void>{
         	mActivity.show("4");
             e.printStackTrace();
         } catch (Exception e) {
-        	mActivity.show("5");
+        	mActivity.show(e.getMessage());
         }
     }
 

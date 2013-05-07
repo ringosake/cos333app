@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ImageAdapter extends BaseAdapter {
@@ -50,11 +52,11 @@ public class ImageAdapter extends BaseAdapter {
             button2.setImageResource(image);
           
             return button2;
-        }	
+        }
+        RelativeLayout gridobj = (RelativeLayout)view.findViewById(R.id.gridobj_wrapper);
+        gridobj.setLayoutParams(new LayoutParams(gridobj.getMeasuredWidth(), gridobj.getMeasuredWidth()));
         ImageView imageView = (ImageView)view.findViewById(R.id.imagepart);
         imageView.setImageResource(mThumbIds[position]);
-        imageView.setMaxHeight(view.getWidth());
-        imageView.setMinimumHeight(view.getWidth());
         TextView textView = (TextView)view.findViewById(R.id.textpart1);
         textView.setText(String.valueOf(position));
         textView = (TextView)view.findViewById(R.id.textpart2);
