@@ -1,12 +1,4 @@
 package com.example.cos333app;
-import java.util.LinkedList;
-import java.util.List;
-
-import library.DatabaseHandler;
-import library.UserFunctions;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -14,10 +6,13 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,6 +36,9 @@ public class RegisterActivity extends Activity {
     private String mEmail;
     private String mNumber;
     private String mName;
+    private String mCode;
+    boolean visited = false;
+    private AlertDialog alert;
     
     public static String TYPE_KEY = "type_key";
     public static enum Type {FOREGROUND, BACKGROUND, BACKGROUND_WITH_SYNC}
@@ -96,6 +94,34 @@ public class RegisterActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
     
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+      super.onSaveInstanceState(savedInstanceState);
+      // Save UI state changes to the savedInstanceState.
+      // This bundle will be passed to onCreate if the process is
+      // killed and restarted.
+      savedInstanceState.putBoolean("visited", visited);
+      savedInstanceState.putString("code", mCode);
+      // etc.
+    }
+    
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      // Restore UI state from the savedInstanceState.
+      // This bundle has also been passed to onCreate.
+      visited = savedInstanceState.getBoolean("visited");
+      mCode = savedInstanceState.getString("code");
+    }
+    @Override
+    protected void onResume() 
+    {
+    	 super.onResume();
+    	 if (visited) {
+    		 alert.show();
+    	 }
+    }
+    
     private Spinner initializeSpinner(int id, String[] values) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(RegisterActivity.this,
                 android.R.layout.simple_spinner_item, values);
@@ -104,8 +130,17 @@ public class RegisterActivity extends Activity {
         return spinner;
     }
     
+    private String sendVerif(String phoneNumber) {
+	    GenerateRandomString grs = new GenerateRandomString();
+	    String code = grs.getAlphaNumeric(5);
+	    SmsManager smsManager = SmsManager.getDefault();
+	    smsManager.sendTextMessage(phoneNumber, null, ("Your verification code is " + code), null, null);
+	    return code;
+    }
+    
     private void initializeFetchButton() {
         Button getToken = (Button) findViewById(R.id.btnRegister);
+        
         getToken.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,8 +152,65 @@ public class RegisterActivity extends Activity {
                 String numStrip = PhoneNumberUtils.extractNetworkPortion(phoneNumber.getText().toString());
                 if (PhoneNumberUtils.isWellFormedSmsAddress(numStrip)) {
                 	mNumber = numStrip;
-                	new library.RegisterThread(RegisterActivity.this, mEmail, mName, mNumber, SCOPE,
-                			REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
+                	if (!visited)
+                		mCode = sendVerif(mNumber);
+                	visited = true;
+                	
+                	// Set an EditText view to get user input 
+                	final EditText input = new EditText(RegisterActivity.this);
+                	
+                	alert = new AlertDialog.Builder(RegisterActivity.this)
+                    .setView(input)
+                    .setTitle("Verification")
+                    .setMessage("Enter the verification code sent to your phone number:")
+                    .setPositiveButton(android.R.string.ok,
+                            new Dialog.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface d, int which) {
+                                    //Do nothing here. We override the onclick
+                                }
+                            })
+                    .setNeutralButton("Send code",
+                            new Dialog.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface d, int which) {
+                                    //Do nothing here. We override the onclick
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create();
+
+		            alert.setOnShowListener(new DialogInterface.OnShowListener() {
+		
+		                @Override
+		                public void onShow(DialogInterface dialog) {
+		
+		                    Button b = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+		                    b.setOnClickListener(new View.OnClickListener() {
+		
+		                        @Override
+		                        public void onClick(View view) {
+		                        	String value = input.getText().toString();
+		                			if (value.equalsIgnoreCase(mCode)) {
+		                				new com.example.cos333app.RegisterThread(RegisterActivity.this, mEmail, mName, mNumber, SCOPE,
+		                            			REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
+		                				alert.dismiss();
+		                			} else
+		                				alert.setMessage("Incorrect verification code");
+		                        }
+		                    });
+		                    Button b1 = alert.getButton(AlertDialog.BUTTON_NEUTRAL);
+		                    b1.setOnClickListener(new View.OnClickListener() {
+		
+		                        @Override
+		                        public void onClick(View view) {
+		                        	mCode = sendVerif(mNumber);
+		                        }
+		                    });
+		                }
+		            });
+		            alert.show();
+                	
                 } else {
                 	show("Invalid phone number");
                 }
@@ -143,7 +235,7 @@ public class RegisterActivity extends Activity {
         }
         if (resultCode == RESULT_OK) {
             Log.i(TAG, "Retrying");
-            new library.RegisterThread(this, mEmail, mName, mNumber, SCOPE, REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
+            new com.example.cos333app.RegisterThread(this, mEmail, mName, mNumber, SCOPE, REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
             return;
         }
         if (resultCode == RESULT_CANCELED) {
@@ -181,5 +273,18 @@ public class RegisterActivity extends Activity {
               d.show();
             }
         });
+    }
+    
+    private class GenerateRandomString {
+    	private static final String ALPHA_NUM = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    	public String getAlphaNumeric(int len) {
+    		StringBuffer sb = new StringBuffer(len);
+    		for (int i = 0; i < len; i++) {
+    			int ndx = (int) (Math.random() * ALPHA_NUM.length());
+    			sb.append(ALPHA_NUM.charAt(ndx));
+    		}
+    		return sb.toString();
+    	}
     }
 }

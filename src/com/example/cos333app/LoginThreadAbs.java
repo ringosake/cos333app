@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package library;
+package com.example.cos333app;
 
-import com.example.cos333app.LoginActivity;
-import com.example.cos333app.MainActivity;
-import com.example.cos333app.R;
 import com.google.android.gms.auth.GoogleAuthUtil;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,8 +29,9 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
+import library.DatabaseHandler;
+import library.UserFunctions;
 
 /**
  * Display personalized greeting. This class contains boilerplate code to consume the token but
