@@ -5,13 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ImageAdapter extends BaseAdapter {
@@ -36,27 +34,18 @@ public class ImageAdapter extends BaseAdapter {
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
-        if (convertView == null) {  // if it's not recycled, initialize some attributes
-            view = new ImageView(mContext);
-            LayoutInflater inflater = LayoutInflater.from(mContext);
-            view=inflater.inflate(R.layout.gridobj, parent, false);
-        } else {
-            view = convertView;
-        }
+        view = new View(mContext);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        
         if (position==(mThumbIds.length - 1)) { // if we're at a position beyond all the images?
-        	Context context = parent.getContext();
-            
-            int image = 0;
-            ImageButton button2 = new ImageButton(context);
-            image = R.drawable.plus;
-            button2.setImageResource(image);
-          
-            return button2;
+            view=inflater.inflate(R.layout.gridobj_plus, parent, false);
+            return view;
         }
-        RelativeLayout gridobj = (RelativeLayout)view.findViewById(R.id.gridobj_wrapper);
-        gridobj.setLayoutParams(new LayoutParams(gridobj.getMeasuredWidth(), gridobj.getMeasuredWidth()));
+        view=inflater.inflate(R.layout.gridobj, parent, false);
         ImageView imageView = (ImageView)view.findViewById(R.id.imagepart);
         imageView.setImageResource(mThumbIds[position]);
+        imageView.setMaxHeight(view.getWidth());
+        imageView.setMinimumHeight(view.getWidth());
         TextView textView = (TextView)view.findViewById(R.id.textpart1);
         textView.setText(String.valueOf(position));
         textView = (TextView)view.findViewById(R.id.textpart2);
