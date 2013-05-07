@@ -8,11 +8,13 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,6 +72,15 @@ public class RegisterActivity extends Activity {
             // added yet.
             show("No account available. Please add an account to the phone first.");
         }
+        
+        // try to fill in the phone number
+        TelephonyManager tMgr =(TelephonyManager)getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        if (tMgr != null) {
+        	String tmpnum = tMgr.getLine1Number();
+        	if (tmpnum != null)
+        		phoneNumber.setText(tmpnum);
+        }
+        
         initializeFetchButton();
         
         // Link to Login Screen

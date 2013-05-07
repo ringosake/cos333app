@@ -19,7 +19,10 @@ package com.example.cos333app;
 import com.google.android.gms.auth.GoogleAuthUtil;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -101,7 +104,7 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
           // error has already been handled in fetchToken()
           return;
         }
-        
+    	
         UserFunctions userFunctions = new UserFunctions();
         mActivity.show("0");
         JSONObject json = userFunctions.loginUser(mEmail, token);
@@ -115,27 +118,24 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
 	  			mActivity.show("2");
 	  			String res = json.getString(KEY_SUCCESS);
 	  			if(Integer.parseInt(res) == 1){
-	  				// user successfully registred
-	  				// Store user details in SQLite Database
-	  				DatabaseHandler db = new DatabaseHandler(mActivity.getApplicationContext());
 	  				JSONObject json_user = json.getJSONObject("user");
-		
-	  				// Clear all previous data in database
-	  				userFunctions.logoutUser(mActivity.getApplicationContext());
-	  				db.addUser(json_user.getString(KEY_EMAIL), json.getString(KEY_UID), json_user.getString(KEY_CREATED_AT));
-		      
-	  				// Check login status in database
-	  				if (userFunctions.isUserLoggedIn(mActivity.getApplicationContext())) {
-	  					// Launch Dashboard Screen
-		              	Intent dashboard = new Intent(mActivity.getApplicationContext(), MainActivity.class);
-		
-		              	// Close all views before launching Dashboard
-		              	dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	                  	mActivity.startActivity(dashboard);
+	  				
+	  				// store login infos
+	  				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mActivity.getApplicationContext());
+	  		    	final Editor edit = prefs.edit();
+	  		    	edit.putString("app_email", json_user.getString(KEY_EMAIL));
+	  		    	edit.putString("app_token", token);
+	  		    	edit.commit();
+	  				
+  					// Launch Dashboard Screen
+	              	Intent dashboard = new Intent(mActivity.getApplicationContext(), MainActivity.class);
 	
-	                  	// Close Login Screen
-	                  	mActivity.finish();
-		            }
+	              	// Close all views before launching Dashboard
+	              	dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                  	mActivity.startActivity(dashboard);
+
+                  	// Close Login Screen
+                  	mActivity.finish();
 		        } else {
 		        	mActivity.show("3");
 		        	GoogleAuthUtil.invalidateToken(mActivity, token);

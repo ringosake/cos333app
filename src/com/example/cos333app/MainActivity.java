@@ -19,10 +19,11 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	    
-		// Check login status in database
+		// Check login status 
         userFunctions = new UserFunctions();
         if(userFunctions.isUserLoggedIn(getApplicationContext())){
-       // user already logged in show databoard
+        	// user already logged in show databoard
+        	// TODO: check with server that the token is valid in order to retrieve user's groups
             setContentView(R.layout.activity_main);
             GridView gridview = (GridView) findViewById(R.id.gridview);
     	    gridview.setAdapter(new ImageAdapter(this));
