@@ -53,7 +53,7 @@ public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void>{
     private static String KEY_SUCCESS = "success";
     private static String KEY_ERROR = "error";
     private static String KEY_ERROR_MSG = "error_msg";
-    private static String KEY_UID = "uid";
+    private static String KEY_UID = "user_id";
     private static String KEY_EMAIL = "email";
     private static String KEY_CREATED_AT = "created_at";
     
