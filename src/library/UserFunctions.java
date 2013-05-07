@@ -83,5 +83,19 @@ public class UserFunctions {
         db.resetTables();
         return true;
     }
+
+	public JSONObject registerUser(String email, String name, String number, String token) {
+		// Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", register_tag));
+        params.add(new BasicNameValuePair("email", email));
+        params.add(new BasicNameValuePair("name", name));
+        params.add(new BasicNameValuePair("number", number));
+        params.add(new BasicNameValuePair("access_token", token));
+        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+        // return json
+     // Log.e("JSON", json.toString());
+        return json;
+	}
  
 }

@@ -40,7 +40,7 @@ import java.net.URL;
  * Display personalized greeting. This class contains boilerplate code to consume the token but
  * isn't integral to getting the tokens.
  */
-public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void>{
+public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
     private static final String TAG = "TokenInfoTask";
     private static final String NAME_KEY = "given_name";
     protected LoginActivity mActivity;
@@ -59,7 +59,7 @@ public abstract class AbstractGetNameTask extends AsyncTask<Void, Void, Void>{
     
     EditText inputPassword;
     
-    AbstractGetNameTask(LoginActivity activity, String email, String scope, int requestCode) {
+    LoginThreadAbs(LoginActivity activity, String email, String scope, int requestCode) {
         this.mActivity = activity;
         this.mScope = scope;
         this.mEmail = email;

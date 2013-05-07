@@ -28,9 +28,9 @@ import java.io.IOException;
  * This example shows how to fetch tokens if you are creating a foreground task/activity and handle
  * auth exceptions.
  */
-public class GetNameInForeground extends AbstractGetNameTask {
+public class LoginThread extends LoginThreadAbs {
 
-  public GetNameInForeground(LoginActivity activity, String email, String scope, int requestCode) {
+  public LoginThread(LoginActivity activity, String email, String scope, int requestCode) {
       super(activity, email, scope, requestCode);
   }
 

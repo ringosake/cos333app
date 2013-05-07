@@ -65,6 +65,16 @@ public class LoginActivity extends Activity {
             show("No account available. Please add an account to the phone first.");
         }
         initializeFetchButton();
+        
+        Button toReg = (Button) findViewById(R.id.btnLinkToRegisterScreen);
+        toReg.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
     }
     
     @Override
@@ -94,7 +104,7 @@ public class LoginActivity extends Activity {
                     return;
                 mEmail = mNamesArray[accountIndex];
                 
-                new library.GetNameInForeground(LoginActivity.this, mEmail, SCOPE,
+                new library.LoginThread(LoginActivity.this, mEmail, SCOPE,
                         REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
                 
         		
@@ -119,7 +129,7 @@ public class LoginActivity extends Activity {
         }
         if (resultCode == RESULT_OK) {
             Log.i(TAG, "Retrying");
-            new library.GetNameInForeground(this, mEmail, SCOPE, REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
+            new library.LoginThread(this, mEmail, SCOPE, REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
             return;
         }
         if (resultCode == RESULT_CANCELED) {
