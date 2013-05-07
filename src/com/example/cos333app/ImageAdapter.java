@@ -44,8 +44,6 @@ public class ImageAdapter extends BaseAdapter {
         view=inflater.inflate(R.layout.gridobj, parent, false);
         ImageView imageView = (ImageView)view.findViewById(R.id.imagepart);
         imageView.setImageResource(mThumbIds[position]);
-        imageView.setMaxHeight(view.getWidth());
-        imageView.setMinimumHeight(view.getWidth());
         TextView textView = (TextView)view.findViewById(R.id.textpart1);
         textView.setText(String.valueOf(position));
         textView = (TextView)view.findViewById(R.id.textpart2);
