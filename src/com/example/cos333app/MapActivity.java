@@ -161,7 +161,7 @@ public class MapActivity extends FragmentActivity {
             	JSONObject json = userFunctions.updateLocation(email, token, latitude, longitude);
             }
             else 
-            	Log.e("USERINFO", "email / token NULL");
+            	Log.e("USERINFO", "email/token NULL");
             
             TextView text = (TextView) findViewById(R.id.tv);
             text.setText("got gps location (" + latitude + "," + longitude + ")");
@@ -175,7 +175,8 @@ public class MapActivity extends FragmentActivity {
             gps.showSettingsAlert();
         }
         if (markers.isEmpty()) {
-        	// query from database !!!!!!!!!! change title for each!!!!
+        	// query from database 
+        	JSONObject json = userFunctions.retrieveAllLocations(email, token, 1);
             // loop through all locations
         	markers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You")));
         }
