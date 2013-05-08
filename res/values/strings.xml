@@ -10,7 +10,6 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="title_activity_message">MessageActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
-    <string name="title_activity_start">StartActivity</string>
     <string name="title_activity_newGroup">NewGroupActivity</string>
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
