@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
-	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -57,6 +57,12 @@
         <activity
             android:name="com.example.cos333app.StartActivity"
             android:label="@string/title_activity_start" >
+        </activity>
+        <activity
+            android:name="com.example.cos333app.FullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen"
+            android:theme="@style/FullscreenTheme" >
         </activity>
     </application>
 

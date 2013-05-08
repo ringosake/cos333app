@@ -7,82 +7,79 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:padding="10dip" >
-        <!--  View Title Label -->
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <!-- View Title Label -->
 
         <TextView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
-            android:text="REGISTER"
+            android:layout_height="100dp"
+            android:layout_marginBottom="40dp"
+            android:layout_weight="0.43"
+            android:background="#ffff00"
+            android:gravity="bottom|center"
+            android:padding="10dp"
+            android:text="ubiquitus"
             android:textColor="#111111"
-            android:textSize="25dip"
+            android:textSize="36sp"
             android:textStyle="bold" />
 
-        <!--  Name Label -->
+        <!-- Name Label -->
 
-        <!--  Name TextField -->
- 
-        <!--  Email Label -->
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:textColor="#111111" />
+        <!-- Name TextField -->
+
+
+        <!-- Email Label -->
 
         <EditText
             android:id="@+id/editText_name"
-            android:layout_width="match_parent"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:padding="10dp" />
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Email"
-            android:textColor="#111111" />
-
-        <!--  Email TextField -->
+        <!-- Email TextField -->
 
         <Spinner
             android:id="@+id/accounts_tester_account_types_spinner_reg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
- 
-        <!--  Password Label -->
-
-        <!--  Password TextField -->
- 
-        <!--  Error message -->
-
-        <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
-            android:text="Phone Number"
-            android:textColor="#111111" />
+            android:padding="10dp" />
+
+        <!-- Password Label -->
+
+
+        <!-- Password TextField -->
+
+
+        <!-- Error message -->
 
         <EditText
             android:id="@+id/editText_number"
-            android:layout_width="match_parent"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="phone" >
+            android:hint="Phone number"
+            android:inputType="phone"
+            android:padding="10dp" >
 
             <requestFocus />
         </EditText>
- 
-        <!--  Login Button -->
+
+        <!-- Login Button -->
+
         <Button
             android:id="@+id/btnRegister"
-            android:layout_width="fill_parent"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
             android:text="Register" />
- 
-        <!--  Link to Login Screen -->
+
+        <!-- Link to Login Screen -->
 
         <TextView
             android:id="@+id/register_error"
@@ -96,11 +93,12 @@
             android:id="@+id/btnLinkToLoginScreen"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dip"
             android:background="@null"
             android:text="Already registred. Log me in!"
-            android:textColor="#21dbd4"
+            android:textColor="#000000"
+            android:textColorLink="#000000"
             android:textStyle="bold" />
+
     </LinearLayout>
  
 </ScrollView>
