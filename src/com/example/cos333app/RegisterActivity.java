@@ -8,6 +8,7 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +42,7 @@ public class RegisterActivity extends Activity {
     private String mCode;
     boolean visited = false;
     private AlertDialog alert;
+    protected ProgressDialog progress;
     
     public static String TYPE_KEY = "type_key";
     public static enum Type {FOREGROUND, BACKGROUND, BACKGROUND_WITH_SYNC}
@@ -203,9 +205,10 @@ public class RegisterActivity extends Activity {
 		                        public void onClick(View view) {
 		                        	String value = input.getText().toString();
 		                			if (value.equalsIgnoreCase(mCode)) {
+		                				alert.dismiss();
+		                				progress = ProgressDialog.show(RegisterActivity.this, "", "Authenticating...", true);
 		                				new com.example.cos333app.RegisterThread(RegisterActivity.this, mEmail, mName, mNumber, SCOPE,
 		                            			REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
-		                				alert.dismiss();
 		                			} else
 		                				alert.setMessage("Incorrect verification code");
 		                        }
@@ -224,6 +227,7 @@ public class RegisterActivity extends Activity {
                 	
                 } else {
                 	show("Invalid phone number");
+                	//TODO: popup with invalid phone number
                 }
             }
         });

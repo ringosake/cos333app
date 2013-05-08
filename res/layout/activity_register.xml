@@ -77,7 +77,8 @@
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:text="Register" />
+            android:text="Register"
+            android:textColor="@android:color/primary_text_light" />
 
         <!-- Link to Login Screen -->
 
@@ -85,6 +86,7 @@
             android:id="@+id/register_error"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:padding="10dip"
             android:textColor="#e30000"
             android:textStyle="bold" />

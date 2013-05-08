@@ -7,6 +7,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +31,7 @@ public class LoginActivity extends Activity {
     
     private String[] mNamesArray;
     private String mEmail;
+    protected ProgressDialog progress;
 
     public static String TYPE_KEY = "type_key";
     public static enum Type {FOREGROUND, BACKGROUND, BACKGROUND_WITH_SYNC}
@@ -96,7 +98,7 @@ public class LoginActivity extends Activity {
                 if (accountIndex < 0)
                     return;
                 mEmail = mNamesArray[accountIndex];
-                
+                progress = ProgressDialog.show(LoginActivity.this, "", "Authenticating...", true);
                 new com.example.cos333app.LoginThread(LoginActivity.this, mEmail, SCOPE,
                         REQUEST_CODE_RECOVER_FROM_AUTH_ERROR).execute();
                 

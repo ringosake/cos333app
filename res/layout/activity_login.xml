@@ -47,7 +47,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dip"
             android:text="Login"
-            android:textColor="@android:color/primary_text_dark" />
+            android:textColor="@android:color/primary_text_light" />
  
         <!--  Link to Registration Screen -->
 
@@ -55,6 +55,7 @@
             android:id="@+id/login_error"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:padding="10dip"
             android:textColor="#e30000"
             android:textStyle="bold" />
@@ -65,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dip"
             android:background="@null"
-            android:text="I don&apos;t have an account. Register Me!"
+            android:text="No account? Register now!"
             android:textColor="#000000"
             android:textColorHint="#000000"
             android:textStyle="bold" />
