@@ -55,6 +55,22 @@ public class MainActivity extends Activity {
 	public void openMap(View view) {
 	    // Do something in response to button
 		Intent intent = new Intent(this, MapActivity.class);
+		
+		// attempting to make it possible to start MapActivity in two ways
+        String key = "newGroup";
+        intent.putExtra(key, false);
+        
+	    startActivity(intent);
+	}
+	
+	public void openNewMap(View view) {
+	    // Do something in response to button
+		Intent intent = new Intent(this, MapActivity.class);
+		
+		// attempting to make it possible to start MapActivity in two ways
+        String key = "newGroup";
+        intent.putExtra(key, true);
+        
 	    startActivity(intent);
 	}
 	

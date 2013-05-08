@@ -120,7 +120,7 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("name", name));
         params.add(new BasicNameValuePair("number", number));
         params.add(new BasicNameValuePair("access_token", token));
-        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+        JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
         // return json
      // Log.e("JSON", json.toString());
         return json;
