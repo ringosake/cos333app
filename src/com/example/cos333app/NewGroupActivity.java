@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import library.UserFunctions;
@@ -34,17 +35,19 @@ public class NewGroupActivity extends Activity {
 
 	private String email; // FIGURE THIS OUT
 	private String token;
-	//private DownloadImageTask task; // IS THIS OK?
+	private DownloadImageTask task; // IS THIS OK?
 	private EditText groupName;
 	private EditText picURL;
 	private Button btnConfirmGroup;
 	private Button btnCancelGroup;
 	UserFunctions uf;
+	private static String STATUS = "status";
+	private static String ERROR = "error";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//this.task = new DownloadImageTask();
+		this.task = new DownloadImageTask();
 	    // Get the layout inflater
 		setContentView(R.layout.dialog_makegroup);
 		this.btnConfirmGroup = (Button) findViewById(R.id.btnConfirmGroup);
@@ -118,21 +121,43 @@ public class NewGroupActivity extends Activity {
  	    //UserFunctions userFunctions = new UserFunctions();
  	    // pull the strings from the edittexts. send groupname to server. get picture using url.
 		
-		if (email != null && token != null) {
-			JSONObject json = uf.createGroup(email, token, groupName.getText().toString(), picURL.getText().toString());
+		if (email == null || token == null) {
+			Log.e("USERINFO", "email / token NULL");
+			// end activity due to login failure. print an error message?
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
+			finish();
 		}
-		else 
-        	Log.e("USERINFO", "email / token NULL");
-		//Bitmap picture = NewGroupDialogFragment.this.task.doInBackground(picURL.getText().toString());
+		JSONObject grpJson = uf.createGroup(email, token, groupName.getText().toString(), picURL.getText().toString());
+		try {
+			Log.d("toString", grpJson.toString());
+			String ourStatus = "";
+			if (grpJson.has(STATUS)) {
+				ourStatus = grpJson.getString(STATUS);
+			}
+			//Log.d("JSON status", ourStatus);
+			
+			if (!ourStatus.equals(ERROR)) {
+				Bitmap picture = this.task.doInBackground(picURL.getText().toString());
 		
-		groupName.setText("");
-	    groupName.setHint("Enter group name");
-	    picURL.setText("");
-	    picURL.setHint("Enter image URL");
+				groupName.setText("");
+				groupName.setHint("Enter group name");
+				picURL.setText("");
+				picURL.setHint("Enter image URL");
  	   
- 	   // then end the activity, returning to MainActivity
-	    Intent intent = new Intent(this, MainActivity.class);
-	    startActivity(intent);
+				// then end the activity, returning to MainActivity
+				Intent intent = new Intent(this, MainActivity.class);
+				startActivity(intent);
+				finish();
+			} else {
+				// Inform user that group creation has failed?
+				// this.show("Group creation failed. Please try again.");
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			// print message?
+		}
 	}
 	
 	public void cancelGroup() {
@@ -145,10 +170,11 @@ public class NewGroupActivity extends Activity {
  	   // then end the activity, returning to MainActivity
 	    Intent intent = new Intent(this, MainActivity.class);
 	    startActivity(intent);
+	    finish();
 	}
 	
 	// get image from URL
-    /* private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 	    FileOutputStream fos;
 			 
 	    protected Bitmap doInBackground(String... urls) {
@@ -195,6 +221,6 @@ public class NewGroupActivity extends Activity {
 
 		        		
 	    }
-    } */
+    } 
 	
 }
