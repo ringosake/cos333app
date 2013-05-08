@@ -90,20 +90,6 @@ public class MapActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
-		// did we get here via the group creation button?
-		boolean isNewGroup = getIntent().getExtras().getBoolean("newGroup");
-		//Log.d("first", "Started MapActivity and got boolean");
-		if (isNewGroup) {
-			//Log.d("second", "Boolean was false!");
-			// launch the new group dialog
-			//try {
-				this.newGroup();
-			//} catch (Exception e) {
-			//	e.printStackTrace();
-			//	String msg = e.getMessage();
-			//	Log.d("MapActiv calling newGroup", msg);
-			//}
-		}
 		
 		// get user
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -130,11 +116,6 @@ public class MapActivity extends FragmentActivity {
         super.onResume();
         setUpMapIfNeeded();
     }
-
-	public void newGroup() {
-	    Intent intent = new Intent(this, NewGroupActivity.class);
-	    startActivity(intent);
-	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
