@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.util.Log;
  
 public class UserFunctions {
  
@@ -27,6 +28,9 @@ public class UserFunctions {
     private static String register_tag = "register";
     private static String sendRegEmail_tag = "send_reg_email";
     private static String createGroup_tag = "create_group";
+    private static String updateloc_tag = "update_location";
+    private static String retrivemyloc_tag = "retrieve_my_location";
+    private static String retrievealllocs_tag = "retrieve_group_members_location";
     
     // constructor
     public UserFunctions(){
@@ -126,4 +130,32 @@ public class UserFunctions {
         return json;
 	}
  
+	/**
+     * function update location of user
+     * @param email
+     * @param password
+     * @param latitude
+     * @param longitude
+     * */
+    public JSONObject updateLocation(String email, String token,
+    		double latitude, double longitude){
+    	Log.e("DATABASE", "lat: "+latitude+", long "+longitude);
+    	Log.e("DATABASE", "email: "+email+", token: "+token);
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", updateloc_tag));
+        params.add(new BasicNameValuePair("email", email));
+        params.add(new BasicNameValuePair("token", token));
+        params.add(new BasicNameValuePair("latitude", String.valueOf(latitude)));
+        params.add(new BasicNameValuePair("longitude", String.valueOf(longitude)));
+        params.add(new BasicNameValuePair("altitude", "0"));
+        params.add(new BasicNameValuePair("bearing", "0"));
+        params.add(new BasicNameValuePair("accuracy", "0"));
+        params.add(new BasicNameValuePair("speed", "0"));
+        Log.e("DATABASE", "sending params");
+        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+        if (json == null) Log.e("JSON", "json null");
+        Log.e("JSON", json.toString());
+        return json;
+    }
 }
