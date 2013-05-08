@@ -19,6 +19,7 @@ package com.example.cos333app;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -81,6 +82,11 @@ public abstract class RegisterThreadAbs extends AsyncTask<Void, Void, Void>{
         onError("Bad response: " + e.getMessage(), e);
       }
       return null;
+    }
+    
+    @Override
+    protected void onPostExecute(Void result) {
+        mActivity.progress.dismiss();
     }
 
     protected void onError(String msg, Exception e) {
@@ -152,7 +158,7 @@ public abstract class RegisterThreadAbs extends AsyncTask<Void, Void, Void>{
 		        }
 		    }
         } catch (JSONException e) {
-        	mActivity.show("4");
+        	mActivity.show(e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
         	mActivity.show(e.getMessage());

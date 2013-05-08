@@ -3,10 +3,11 @@ package com.example.cos333app;
 import android.os.Bundle;
 import android.content.Intent;
 import android.content.SharedPreferences;
-/*import android.app.Activity;
-import android.support.v4.app.FragmentManager;*/
+/*import android.app.Activity;*/
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+
 import android.view.Menu;
 import android.view.View;
 
@@ -91,9 +92,17 @@ public class MapActivity extends FragmentActivity {
 		setContentView(R.layout.activity_map);
 		// did we get here via the group creation button?
 		boolean isNewGroup = getIntent().getExtras().getBoolean("newGroup");
+		//Log.d("first", "Started MapActivity and got boolean");
 		if (isNewGroup) {
+			//Log.d("second", "Boolean was false!");
 			// launch the new group dialog
-			
+			//try {
+				this.newGroup();
+			//} catch (Exception e) {
+			//	e.printStackTrace();
+			//	String msg = e.getMessage();
+			//	Log.d("MapActiv calling newGroup", msg);
+			//}
 		}
 		
 		// get user
@@ -123,8 +132,8 @@ public class MapActivity extends FragmentActivity {
     }
 
 	public void newGroup() {
-	    DialogFragment newFragment = new NewGroupDialogFragment();
-	    newFragment.show(newFragment.getFragmentManager(), "newGroup");
+	    Intent intent = new Intent(this, NewGroupActivity.class);
+	    startActivity(intent);
 	}
 	
 	@Override

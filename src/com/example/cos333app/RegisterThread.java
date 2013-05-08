@@ -16,6 +16,8 @@
 
 package com.example.cos333app;
 
+import android.app.ProgressDialog;
+
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
@@ -29,10 +31,10 @@ import java.io.IOException;
  * auth exceptions.
  */
 public class RegisterThread extends RegisterThreadAbs {
-
-  public RegisterThread(RegisterActivity activity, String email, String name, String number, String scope, int requestCode) {
-      super(activity, email, name, number, scope, requestCode);
-  }
+	
+	public RegisterThread(RegisterActivity activity, String email, String name, String number, String scope, int requestCode) {
+		super(activity, email, name, number, scope, requestCode);
+	}
 
 
   /**

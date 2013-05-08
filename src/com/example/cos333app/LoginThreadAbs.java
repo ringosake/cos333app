@@ -77,6 +77,11 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
       }
       return null;
     }
+    
+    @Override
+    protected void onPostExecute(Void result) {
+        mActivity.progress.dismiss();
+    }
 
     protected void onError(String msg, Exception e) {
         if (e != null) {
