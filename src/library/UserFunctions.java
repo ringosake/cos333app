@@ -21,10 +21,12 @@ public class UserFunctions {
     private static String loginURL = "http://murmuring-inlet-4150.herokuapp.com/";
     private static String registerURL = "http://murmuring-inlet-4150.herokuapp.com/";
     private static String sendRegEmailURL = "http://murmuring-inlet-4150.herokuapp.com/";
+    private static String makeGroupURL = "http://murmuring-inlet-4150.herokuapp.com/";
  
     private static String login_tag = "login";
     private static String register_tag = "register";
     private static String sendRegEmail_tag = "send_reg_email";
+    private static String createGroup_tag = "create_group";
     
     // constructor
     public UserFunctions(){
@@ -47,6 +49,21 @@ public class UserFunctions {
      // Log.e("JSON", json.toString());
         return json;
     }
+    
+    /**
+     * function create group request
+     * @param userid
+     * 
+     * */
+    public JSONObject createGroup(String userid, String groupName, String picURL) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", createGroup_tag));
+		params.add(new BasicNameValuePair("userid", userid));
+		params.add(new BasicNameValuePair("groupName", groupName));
+		params.add(new BasicNameValuePair("picURL", picURL));
+		JSONObject json = jsonParser.getJSONFromUrl(makeGroupURL, params);
+		return json;
+	}
     
     // TODO: this function is not used
     /**
