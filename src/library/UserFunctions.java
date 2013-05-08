@@ -59,12 +59,13 @@ public class UserFunctions {
      * @param userid
      * 
      * */
-    public JSONObject createGroup(String userid, String groupName, String picURL) {
+    public JSONObject createGroup(String email, String token, String groupName, String picURL) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("tag", createGroup_tag));
-		params.add(new BasicNameValuePair("userid", userid));
-		params.add(new BasicNameValuePair("groupName", groupName));
-		params.add(new BasicNameValuePair("picURL", picURL));
+		params.add(new BasicNameValuePair("email", email));
+		params.add(new BasicNameValuePair("access_token", token));
+		params.add(new BasicNameValuePair("group_name", groupName));
+		params.add(new BasicNameValuePair("picture_url", picURL));
 		JSONObject json = jsonParser.getJSONFromUrl(makeGroupURL, params);
 		return json;
 	}

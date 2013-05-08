@@ -15,11 +15,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +32,8 @@ import android.widget.EditText;
 
 public class NewGroupActivity extends Activity {
 
-	private String userID = "11"; // FIGURE THIS OUT
+	private String email; // FIGURE THIS OUT
+	private String token;
 	//private DownloadImageTask task; // IS THIS OK?
 	private EditText groupName;
 	private EditText picURL;
@@ -47,6 +50,10 @@ public class NewGroupActivity extends Activity {
 		this.btnCancelGroup = (Button) findViewById(R.id.btnCancelGroup);	
 		this.groupName = (EditText) findViewById(R.id.groupName);
 		this.picURL = (EditText) findViewById(R.id.picURL);
+		// get user
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+		this.email = prefs.getString("app_email", null);
+		this.token = prefs.getString("app_token", null);
 		
 		btnConfirmGroup.setOnClickListener(new OnClickListener() {
             @Override
@@ -108,7 +115,12 @@ public class NewGroupActivity extends Activity {
 	public void confirmGroup() {
  	    //UserFunctions userFunctions = new UserFunctions();
  	    // pull the strings from the edittexts. send groupname to server. get picture using url.
-		//JSONObject json = UserFunctions.createGroup(userID, groupName.getText().toString(), picURL.getText().toString());
+		UserFunctions uf = new UserFunctions();
+		if (email != null && token != null) {
+			JSONObject json = uf.createGroup(email, token, groupName.getText().toString(), picURL.getText().toString());
+		}
+		else 
+        	Log.e("USERINFO", "email / token NULL");
 		//Bitmap picture = NewGroupDialogFragment.this.task.doInBackground(picURL.getText().toString());
 		
 		groupName.setText("");

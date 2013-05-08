@@ -26,7 +26,8 @@ import android.widget.EditText;
 
 public class NewGroupDialogFragment extends DialogFragment {
 
-	private String userID = "11"; // FIGURE THIS OUT
+	private String email = "11"; // FIGURE THIS OUT
+	private String token = "11";
 	private DownloadImageTask task; // IS THIS OK?
 	
 	@Override
@@ -50,7 +51,7 @@ public class NewGroupDialogFragment extends DialogFragment {
 	            	   
 	            	   UserFunctions userFunctions = new UserFunctions();
 	            	   // pull the strings from the edittexts. send groupname to server. get picture using url.
-	       			   JSONObject json = userFunctions.createGroup(userID, groupName.getText().toString(), picURL.getText().toString());
+	       			   JSONObject json = userFunctions.createGroup(email, token, groupName.getText().toString(), picURL.getText().toString());
 	       			   Bitmap picture = NewGroupDialogFragment.this.task.doInBackground(picURL.getText().toString());
 	               }
 	           })
