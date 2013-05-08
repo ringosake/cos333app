@@ -39,6 +39,7 @@ public class NewGroupActivity extends Activity {
 	private EditText picURL;
 	private Button btnConfirmGroup;
 	private Button btnCancelGroup;
+	UserFunctions uf;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class NewGroupActivity extends Activity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		this.email = prefs.getString("app_email", null);
 		this.token = prefs.getString("app_token", null);
+		this.uf = new UserFunctions();
 		
 		btnConfirmGroup.setOnClickListener(new OnClickListener() {
             @Override
@@ -115,7 +117,7 @@ public class NewGroupActivity extends Activity {
 	public void confirmGroup() {
  	    //UserFunctions userFunctions = new UserFunctions();
  	    // pull the strings from the edittexts. send groupname to server. get picture using url.
-		UserFunctions uf = new UserFunctions();
+		
 		if (email != null && token != null) {
 			JSONObject json = uf.createGroup(email, token, groupName.getText().toString(), picURL.getText().toString());
 		}
