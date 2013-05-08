@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.io.OutputStream;
 import java.net.URL;
 
@@ -16,24 +17,30 @@ import library.UserFunctions;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -54,6 +61,40 @@ public class NewGroupActivity extends Activity {
 	private ImageView image;
 	private String groupID = "12"; //TODO: get the real one somehow
 	
+	// for contact autocomplete
+	MultiAutoCompleteTextView contactView;
+	public ArrayList<String> c_Name = new ArrayList<String>();
+	public ArrayList<ArrayList<String>> c_Number = new ArrayList<ArrayList<String>>();
+	String[] name_Val=null;
+	
+	public void readContacts(){
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+               null, null, null, null);
+        
+        if (cur.getCount() > 0) {
+           while (cur.moveToNext()) {
+               String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+               String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+               if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+            	   c_Name.add(name);
+            	   ArrayList<String> nums = new ArrayList<String>();
+                   // get the phone number
+                   Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
+                                          ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                                          new String[]{id}, null);
+                   while (pCur.moveToNext()) {
+                         String phone = pCur.getString(
+                                pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                         nums.add(phone);
+                   }
+                   c_Number.add(nums);
+                   pCur.close();
+               }
+           }
+      }
+   }
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,6 +109,18 @@ public class NewGroupActivity extends Activity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		this.email = prefs.getString("app_email", null);
 		this.token = prefs.getString("app_token", null);
+        
+		// multiautocomplete
+        contactView = (MultiAutoCompleteTextView) findViewById(R.id.multiautocomp_contacts);
+        contactView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        
+        readContacts();
+        
+        name_Val = (String[]) c_Name.toArray(new String[c_Name.size()]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, name_Val);
+        contactView.setThreshold(1);
+        contactView.setAdapter(adapter);
+        
 		this.uf = new UserFunctions();
 		this.image = (ImageView) findViewById(R.id.imageView1);
 		
