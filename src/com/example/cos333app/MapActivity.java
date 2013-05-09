@@ -1,36 +1,35 @@
 package com.example.cos333app;
 
-import android.os.Bundle;
+import java.util.ArrayList;
+import java.util.List;
+
+import library.UserFunctions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-/*import android.app.Activity;*/
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.DialogFragment;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
-
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.CameraUpdate;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import org.json.JSONObject;
-
-import library.UserFunctions;
-import android.location.*;
-import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.widget.TextView;
-import android.util.Log;
 
 public class MapActivity extends FragmentActivity {
 	
@@ -42,13 +41,18 @@ public class MapActivity extends FragmentActivity {
     private Handler handler;
     private List<Marker> markers;
     private String email, token; // to identify user
+    private int groupid = 1;
     
     UserFunctions userFunctions;
     LocationManager locationManager;
     Geocoder geocoder;
-    TextView locationText;
     
-    private int debug = 0;
+    private static String KEY_STATUS = "status";
+    private static String VAL_SUCCESS = "success";
+    private static String KEY_NUSERS = "num_users";
+    private static String KEY_NAME = "user_name";
+    private static String KEY_LAT = "latitude";
+    private static String KEY_LONG = "longitude";
     
     Runnable statusChecker = new Runnable() {
     	@Override
@@ -68,22 +72,13 @@ public class MapActivity extends FragmentActivity {
     	if(gps.canGetLocation()){
             latitude = gps.getLatitude();
             longitude = gps.getLongitude();
-            int test = gps.getDebug();
-            // send location to database !!!!!!
-            TextView text = (TextView) findViewById(R.id.tv);
-            text.setText(debug + " (" + latitude + "," + longitude + ") " + test);
-            debug++;
+            updateMyLocation();
         }
     	else {
-    		TextView text = (TextView) findViewById(R.id.tv);
-            text.setText("couldn't get gps location");
+    		Log.e("MAPACTIVITY", "couldn't get gps location");
     	}
-    	// query database for other locations !!!!!!!!
-    	
-    	// update markers
-    	for (int i = 0; i < markers.size(); i++) {
-    		markers.get(i).setPosition(new LatLng(latitude, longitude));
-    	}
+    	// update all locations
+    	updateAllLocations();
     }
 
 	@Override
@@ -158,36 +153,95 @@ public class MapActivity extends FragmentActivity {
             longitude = gps.getLongitude();
             // send location to database
             if (email != null && token != null) {
-            	JSONObject json = userFunctions.updateLocation(email, token, latitude, longitude);
+            	updateMyLocation();
             }
             else 
             	Log.e("USERINFO", "email/token NULL");
             
-            TextView text = (TextView) findViewById(R.id.tv);
-            text.setText("got gps location (" + latitude + "," + longitude + ")");
-            Log.e("GPS", "got gps location (" + latitude + "," + longitude + ")");
+            Log.d("GPS", "got gps location (" + latitude + "," + longitude + ")");
         }else{
-        	TextView text = (TextView) findViewById(R.id.tv);
-            text.setText("can't get location");
             Log.e("GPS", "can't get location");
             // can't get location: GPS or Network is not enabled
             // Ask user to enable GPS/network in settings
             gps.showSettingsAlert();
         }
-        if (markers.isEmpty()) {
-        	// query from database 
-        	JSONObject json = userFunctions.retrieveAllLocations(email, token, 1);
-            // loop through all locations
-        	markers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You")));
-        }
-        CameraUpdate cameraUpdate= CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15);
-        mMap.moveCamera(cameraUpdate);
+        updateAllLocations();
+        moveCameraView(latitude, longitude);
     	
         mUiSettings = mMap.getUiSettings();
-        //mMap.setMyLocationEnabled(true);
-        //mUiSettings.setMyLocationButtonEnabled(true);
         mUiSettings.setScrollGesturesEnabled(true);
         mUiSettings.setZoomGesturesEnabled(true);
         mUiSettings.setZoomControlsEnabled(false);
     }
+	
+	private void moveCameraView(double lat, double lng) {
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 15);
+        mMap.moveCamera(cameraUpdate);
+	}
+	
+	private void updateAllLocations() {
+		// query from database 
+    	JSONObject jsonret = userFunctions.retrieveAllLocations(email, token, groupid);
+    	try {
+    		if (jsonret.getString(KEY_STATUS) != null && 
+    				VAL_SUCCESS.compareToIgnoreCase(jsonret.get(KEY_STATUS).toString()) == 0) {
+    			Log.d("MAPACTIVITY", "successful location retrieval");
+    			int nusers = 0;
+    			if (jsonret.getString(KEY_NUSERS) != null) { 
+    				nusers = jsonret.getInt(KEY_NUSERS);
+    				Log.d("MAPACTIVITY", "number of users = "+nusers);
+    			}
+    			else {
+    				Log.e("MAPACTIVITY", "cannot find " + KEY_NUSERS);
+    			}
+    			double lat = 0, lng = 0;
+    			String name = " ";
+    			// clear markers
+    			for (int m = 0; m < markers.size(); m++) {
+    				markers.get(m).remove();
+    			}
+    			markers.clear();
+    			// loop through all locations
+    			for (int u = 0; u < nusers; u++) {
+    				JSONObject jsonuser = null;
+    				if (jsonret.getString(Integer.toString(u)) != null) {
+    						jsonuser = jsonret.getJSONObject(Integer.toString(u));
+        				if (jsonuser.getString(KEY_LAT) != null) { lat = jsonuser.getDouble(KEY_LAT); }
+        				if (jsonuser.getString(KEY_LONG) != null) { lng = jsonuser.getDouble(KEY_LONG); }
+        				if (jsonuser.getString(KEY_NAME) != null) { name = jsonuser.get(KEY_NAME).toString(); }
+        				Log.d("RETRIEVE", name + " at (" + lat + ", " + lng + ")");
+        				Marker m = mMap.addMarker(new MarkerOptions()
+        										.position(new LatLng(lat, lng))
+        										.title(name));//,
+        										//.icon(BitmapDescriptorFactory.defaultMarker(0)));
+        				m.setVisible(true);
+        				markers.add(m);
+    				}
+    			}
+    		}
+    	}catch (JSONException e) {
+    		Log.e("MAPACTIVITY", "JSON exception");
+            e.printStackTrace();
+        } catch (Exception e) {
+        	Log.e("MAPACTIVITY", "Exception");
+        	Log.e("MAPACTIVITY", e.getMessage());
+        }
+	}
+	
+	private void updateMyLocation() {
+		JSONObject jsonupdateloc = userFunctions.updateLocation(email, token, latitude, longitude);
+    	try {
+    		if (jsonupdateloc.getString(KEY_STATUS) != null && 
+    				VAL_SUCCESS.compareToIgnoreCase(jsonupdateloc.get(KEY_STATUS).toString()) == 0) 
+    			Log.d("MAPACTIVITY", "successful location update");
+    	}catch (JSONException e) {
+    		Log.e("MAPACTIVITY", "JSON exception");
+            e.printStackTrace();
+        } catch (Exception e) {
+        	Log.e("MAPACTIVITY", "Exception");
+        	Log.e("MAPACTIVITY", e.getMessage());
+        }
+	}
 }
+
+

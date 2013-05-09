@@ -8,14 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="com.google.android.gms.maps.SupportMapFragment" />
-    
-    <!-- placeholder for mapview 
-	
-	<ImageView
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:scaleType="centerCrop"
-	    android:src="@drawable/map" /> -->
 
 	<RelativeLayout
 	    android:layout_width="match_parent"
@@ -74,6 +66,7 @@
 
 	</LinearLayout>
 	
+	<!-- for debugging 
 	<TextView
             android:id="@+id/tv"
             android:layout_width="wrap_content"
@@ -82,6 +75,6 @@
             android:background="#D000"
             android:layout_marginLeft="49dp"
             android:layout_marginTop="116dp"
-            android:text="status" />
+            android:text="status" /> -->
 	
 </FrameLayout>

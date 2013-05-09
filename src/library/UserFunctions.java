@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.text.format.Time;
 import android.util.Log;
  
 public class UserFunctions {
@@ -29,6 +30,7 @@ public class UserFunctions {
     private static String register_tag = "register";
     private static String sendRegEmail_tag = "send_reg_email";
     private static String createGroup_tag = "create_group";
+    private static String requestMessage_tag = "request_message";
     private static String updateloc_tag = "update_location";
     private static String retrivemyloc_tag = "retrieve_my_location";
     private static String retrievealllocs_tag = "retrieve_group_members_location";
@@ -68,7 +70,7 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("access_token", token));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         // return json
-     // Log.e("JSON", json.toString());
+        //Log.e("USERFUNC_LOGIN", json.toString());
         return json;
     }
     
@@ -89,6 +91,24 @@ public class UserFunctions {
 		//Log.e("JSON", json.toString());
 		return json;
 	}
+    
+    /**
+     * function request all new messages in a particular group from server. Note: time indicates the
+     * time at which this user most recently received a new message from the server.
+     */
+    public JSONObject requestMessage(String email, String token, String groupID, String time) {
+        //long now = System.currentTimeMillis(); irrelevant?
+        //String time = String.valueOf(now);
+    	List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", requestMessage_tag));
+		params.add(new BasicNameValuePair("email", email));
+		params.add(new BasicNameValuePair("token", token)); // access_token?
+		params.add(new BasicNameValuePair("group_id", groupID));
+		params.add(new BasicNameValuePair("time", time));
+		JSONObject json = jsonParser.getJSONFromUrl(makeGroupURL, params);
+		//Log.e("JSON", json.toString());
+		return json;
+    }
     
     // TODO: this function is not used
     /**
@@ -172,7 +192,8 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("accuracy", "0"));
         params.add(new BasicNameValuePair("speed", "0"));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
-        if (json == null) Log.e("JSON", "json null");
+        if (json == null) Log.e("USERFUNC", "update location: json null");
+        //Log.e("USERFUNC_UPDATELOC", json.toString());
         return json;
     }
     /**
@@ -182,17 +203,16 @@ public class UserFunctions {
      * @param groupid
      * */
     public JSONObject retrieveAllLocations(String email, String token, int groupid){
-    	Log.e("DATABASE", "group: "+groupid+"email: "+email+", token: "+token);
+    	if (email == null || token == null) Log.e("USERFUNC_RETRIEVE", "token NULL");
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", retrievealllocs_tag));
         params.add(new BasicNameValuePair("email", email));
         params.add(new BasicNameValuePair("token", token));
         params.add(new BasicNameValuePair("group_id", String.valueOf(groupid)));
-        Log.e("DATABASE", "sending params");
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
-        if (json == null) Log.e("JSON", "json null");
-        Log.e("JSON", json.toString());
+        if (json == null) Log.e("USERFUNC", "retrieve locations: json null");
+        //Log.d("USERFUNC_RETREIVE", json.toString());
         return json;
     }
 }
