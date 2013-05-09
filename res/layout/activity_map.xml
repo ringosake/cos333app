@@ -65,7 +65,7 @@
 		    android:onClick="goToMessages" />
 
 		<Button
-		    android:id="@+id/changebounds"
+		    android:id="@+id/buttonchangebounds"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="View All"
@@ -83,5 +83,12 @@
             android:layout_marginLeft="49dp"
             android:layout_marginTop="116dp"
             android:text="status" /> -->
+
+	<Button
+	    android:id="@+id/buttontrails"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="View Trails" 
+	    android:onClick="viewTrails" />
 	
 </FrameLayout>
