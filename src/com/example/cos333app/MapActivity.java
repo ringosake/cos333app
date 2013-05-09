@@ -40,7 +40,7 @@ public class MapActivity extends FragmentActivity {
 	private GoogleMap mMap;
     private UiSettings mUiSettings;
     private GPSTracker gps;
-    private double latitude = 0, longitude = 0;
+    private Location cur_location;
     private LatLngBounds bounds = null;
     private Handler handler;
     private LinkedList<Marker> markers;
@@ -87,9 +87,8 @@ public class MapActivity extends FragmentActivity {
     void updateStatus() {
     	// query location
     	if(gps.canGetLocation()){
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
-            //updateMyLocation();
+            cur_location = gps.getLocation();
+            updateMyLocation();
         }
     	else {
     		Log.e("MAPACTIVITY", "couldn't get gps location");
@@ -167,12 +166,12 @@ public class MapActivity extends FragmentActivity {
 			if (foundvaliduser)	moveCameraView();
 			else {
 				Log.e("MAPACTIVITY", "no valid user locations");
-				moveCameraView(latitude, longitude);
+				moveCameraView(cur_location.getLatitude(), cur_location.getLongitude());
 			}
 		}
 		else {
 			Log.e("MAPACTIVITY", "no locations");
-			moveCameraView(latitude, longitude);
+			moveCameraView(cur_location.getLatitude(), cur_location.getLongitude());
 		}
 	}
 	public void viewTrails(View view) {
@@ -232,15 +231,14 @@ public class MapActivity extends FragmentActivity {
     	gps = new GPSTracker(MapActivity.this);
     	// check if GPS enabled
         if(gps.canGetLocation()){
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
+        	cur_location = gps.getLocation();
             // send location to database
             if (email != null && token != null)
             	updateMyLocation();
             else 
             	Log.e("USERINFO", "email/token NULL");
             
-            Log.d("GPS", "got gps location (" + latitude + "," + longitude + ")");
+            Log.d("GPS", "got gps location (" + cur_location.getLatitude() + "," + cur_location.getLongitude() + ")");
         }else{
             Log.e("GPS", "can't get location");
             // can't get location: GPS or Network is not enabled
@@ -248,7 +246,7 @@ public class MapActivity extends FragmentActivity {
             gps.showSettingsAlert();
         }
         updateAllLocations();
-        moveCameraView(latitude, longitude);
+        moveCameraView(cur_location.getLatitude(), cur_location.getLongitude());
     	
         mUiSettings = mMap.getUiSettings();
         mUiSettings.setScrollGesturesEnabled(true);
@@ -325,7 +323,8 @@ public class MapActivity extends FragmentActivity {
     			userToIndex.clear();*/
     			for (int i = 0; i < validusers.size(); i++)
     				validusers.set(i,  false);
-				bounds = new LatLngBounds(new LatLng(latitude, longitude), new LatLng(latitude, longitude));
+				bounds = new LatLngBounds(new LatLng(cur_location.getLatitude(), cur_location.getLongitude()), 
+										  new LatLng(cur_location.getLatitude(), cur_location.getLongitude()));
     			// loop through all locations
 				int index;
     			for (int u = 0; u < nusers; u++) {
@@ -379,7 +378,7 @@ public class MapActivity extends FragmentActivity {
 	}
 	
 	private void updateMyLocation() {
-		JSONObject jsonupdateloc = userFunctions.updateLocation(email, token, latitude, longitude);
+		JSONObject jsonupdateloc = userFunctions.updateLocation(email, token, cur_location.getLatitude(), cur_location.getLongitude());
     	try {
     		if (jsonupdateloc.getString(KEY_STATUS) != null && 
     				VAL_SUCCESS.compareToIgnoreCase(jsonupdateloc.get(KEY_STATUS).toString()) == 0) 
