@@ -24,6 +24,7 @@ public class UserFunctions {
     private static String registerURL = "http://murmuring-inlet-4150.herokuapp.com/";
     private static String sendRegEmailURL = "http://murmuring-inlet-4150.herokuapp.com/";
     private static String makeGroupURL = "http://murmuring-inlet-4150.herokuapp.com/";
+    private static String inviteMembersURL = "http://murmuring-inlet-4150.herokuapp.com/";
  
     private static String login_tag = "login";
     private static String register_tag = "register";
@@ -37,6 +38,23 @@ public class UserFunctions {
     // constructor
     public UserFunctions(){
         jsonParser = new JSONParser();
+    }
+    
+    /**
+     * invite some members to a group by phone number.
+     * */
+    public JSONObject inviteMembers(String email, String token, int groupId, String[] phoneNumbers){
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", "add_more_members"));
+        params.add(new BasicNameValuePair("email", email));
+        params.add(new BasicNameValuePair("token", token));
+        for (int i = 0; i < phoneNumbers.length; i++)
+        	params.add(new BasicNameValuePair("numbers["+i+"]", phoneNumbers[i]));
+        JSONObject json = jsonParser.getJSONFromUrl(inviteMembersURL, params);
+        // return json
+     // Log.e("JSON", json.toString());
+        return json;
     }
     
     /**
