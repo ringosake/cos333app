@@ -166,17 +166,15 @@ public class UserFunctions {
      * */
     public JSONObject retrieveAllLocations(String email, String token, int groupid){
     	if (email == null || token == null) Log.e("USERFUNC_RETRIEVE", "token NULL");
-    	Log.d("USERFUNC_RETRIEVE", "group: "+groupid+", email: "+email);
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", retrievealllocs_tag));
         params.add(new BasicNameValuePair("email", email));
         params.add(new BasicNameValuePair("token", token));
         params.add(new BasicNameValuePair("group_id", String.valueOf(groupid)));
-        Log.d("USERFUNC_RETRIEVE", "sending params");
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         if (json == null) Log.e("USERFUNC", "retrieve locations: json null");
-        Log.d("USERFUNC_RETREIVE", json.toString());
+        //Log.d("USERFUNC_RETREIVE", json.toString());
         return json;
     }
 }
