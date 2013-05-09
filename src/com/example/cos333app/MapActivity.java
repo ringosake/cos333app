@@ -9,27 +9,30 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.View;
-import android.util.SparseIntArray;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.Polyline;
 
 public class MapActivity extends FragmentActivity {
 	
@@ -42,9 +45,14 @@ public class MapActivity extends FragmentActivity {
     private Handler handler;
     private LinkedList<Marker> markers;
     private LinkedList<LatLng> locations;
+    private LinkedList<PolylineOptions> trails;
+    private LinkedList<Polyline> traillines;
+    private LinkedList<Boolean> validusers;
     private SparseIntArray userToIndex;
     private static int updatetime = 5000; // 5 seconds
     private static double mindist = 5; // don't update unless 5m difference
+    private boolean SHOW_TRAILS;
+    private float [] results; // scratch work
     
     // user, group identification
 	private String email, token; // to identify user
@@ -81,19 +89,22 @@ public class MapActivity extends FragmentActivity {
     	if(gps.canGetLocation()){
             latitude = gps.getLatitude();
             longitude = gps.getLongitude();
-            updateMyLocation();
+            //updateMyLocation();
         }
     	else {
     		Log.e("MAPACTIVITY", "couldn't get gps location");
     	}
     	// update all locations
     	updateAllLocations();
+    	updateTrails();
     }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
+		
+		SHOW_TRAILS = false;
 		
 		// get user
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -105,6 +116,10 @@ public class MapActivity extends FragmentActivity {
         markers = new LinkedList<Marker>();
         locations = new LinkedList<LatLng>();
         userToIndex = new SparseIntArray();
+        validusers = new LinkedList<Boolean>();
+        trails = new LinkedList<PolylineOptions>();
+        traillines = new LinkedList<Polyline>();
+        results = new float[1];
         
         setUpMapIfNeeded();
         startRepeatingTask();
@@ -136,16 +151,66 @@ public class MapActivity extends FragmentActivity {
 	}
 	
 	public void viewAll(View view) {
-		// recompute bounding box for everyone 
+		// recompute bounding box for everyone
+		boolean foundvaliduser = false;
 		if (locations.size() > 0) {
-			bounds = new LatLngBounds(locations.get(0), locations.get(0));
-			for (int i = 1; i < locations.size(); i++)
-				bounds = bounds.including(locations.get(i));
-			moveCameraView();
+			for (int i = 0; i < locations.size(); i++) {
+				if (validusers.get(i)) {
+					if (!foundvaliduser) {
+						foundvaliduser = true;
+						bounds = new LatLngBounds(locations.get(i), locations.get(i));
+					}
+					else
+						bounds = bounds.including(locations.get(i));
+				}
+			}
+			if (foundvaliduser)	moveCameraView();
+			else {
+				Log.e("MAPACTIVITY", "no valid user locations");
+				moveCameraView(latitude, longitude);
+			}
 		}
 		else {
 			Log.e("MAPACTIVITY", "no locations");
 			moveCameraView(latitude, longitude);
+		}
+	}
+	public void viewTrails(View view) {
+		if (!SHOW_TRAILS) { // show
+			traillines.clear();
+			boolean foundvaliduser = false;
+			for (int i = 0; i < trails.size(); i++) {
+				if (validusers.get(i)) {
+					foundvaliduser = true;
+					Polyline pline = mMap.addPolyline(trails.get(i));
+					traillines.add(pline);
+				}
+			}
+			if (foundvaliduser) SHOW_TRAILS = true; // toggle
+			else Log.e("MAPACTIVITY", "found no valid users for showing trails");
+		}
+		else { // turn off
+			for (int i = 0; i < traillines.size(); i++) 
+				traillines.get(i).remove();
+			traillines.clear();
+			SHOW_TRAILS = false; // toggle
+		}
+	}
+	private void updateTrails() {
+		if (SHOW_TRAILS) {
+			for (int i = 0; i < traillines.size(); i++) 
+				traillines.get(i).remove();
+			traillines.clear();
+			boolean foundvaliduser = false;
+			for (int i = 0; i < trails.size(); i++) {
+				if (validusers.get(i)) {
+					foundvaliduser = true;
+					Polyline pline = mMap.addPolyline(trails.get(i));
+					traillines.add(pline);
+				}
+			}
+			if (foundvaliduser) SHOW_TRAILS = true; // toggle
+			else Log.e("MAPACTIVITY", "found no valid users for updating trails");
 		}
 	}
 	
@@ -255,12 +320,14 @@ public class MapActivity extends FragmentActivity {
     			// clear markers
     			for (int m = 0; m < markers.size(); m++)
     				markers.get(m).remove();
-    			markers.clear();
+    			/*markers.clear();
     			locations.clear();
-    			userToIndex.clear();
+    			userToIndex.clear();*/
+    			for (int i = 0; i < validusers.size(); i++)
+    				validusers.set(i,  false);
 				bounds = new LatLngBounds(new LatLng(latitude, longitude), new LatLng(latitude, longitude));
     			// loop through all locations
-				int index = 0;
+				int index;
     			for (int u = 0; u < nusers; u++) {
     				JSONObject jsonuser = null;
     				if (jsonret.getString(Integer.toString(u)) != null) {
@@ -272,8 +339,6 @@ public class MapActivity extends FragmentActivity {
         				if (userid != uid) { colour = OTHERS_COLOUR; }
         				else               { colour = SELF_COLOUR;   }
         				Log.d("RETRIEVE", name + " at (" + lat + ", " + lng + ")");
-        				userToIndex.put(userid, index);
-        				locations.add(new LatLng(lat, lng));
                         bounds = bounds.including(new LatLng(lat, lng));
         				Marker m = mMap.addMarker(new MarkerOptions()
         										.position(new LatLng(lat, lng))
@@ -281,16 +346,34 @@ public class MapActivity extends FragmentActivity {
         										.icon(BitmapDescriptorFactory.defaultMarker(colour)));
         				m.setVisible(true);
         				if (userid == uid) m.showInfoWindow();
-        				markers.add(m);
-        				index++;
+        				index = userToIndex.get(userid, -1);
+        				if (index < 0)  { // new user
+                            index = validusers.size();
+                            userToIndex.put(userid, index);
+            				markers.add(m);
+            				locations.add(new LatLng(lat, lng));
+            				validusers.add(true);
+                            PolylineOptions polyoptions = new PolylineOptions().add(new LatLng(lat, lng));
+                            trails.add(polyoptions);
+                        }
+                        else {
+                        	Location.distanceBetween(locations.get(index).latitude, locations.get(index).longitude,
+                        			lat, lng, results);
+                        	Log.d("DISTANCE", "" + results[0]);
+                        	if (results[0] > mindist) 
+                        		trails.get(index).add(new LatLng(lat, lng)); // only add to trail if sufficiently far from last recorded location
+                            markers.set(index, m);
+                            locations.set(index,  new LatLng(lat, lng));
+                            validusers.set(index, true);
+                        }
     				}
     			}
     		}
     	}catch (JSONException e) {
-    		Log.e("MAPACTIVITY", "JSON exception");
+    		Log.e("MAPACTIVITY", "updateAllLocations(): JSON exception");
             e.printStackTrace();
         } catch (Exception e) {
-        	Log.e("MAPACTIVITY", "Exception");
+        	Log.e("MAPACTIVITY", "updateAllLocations(): Exception");
         	Log.e("MAPACTIVITY", e.getMessage());
         }
 	}
@@ -302,10 +385,10 @@ public class MapActivity extends FragmentActivity {
     				VAL_SUCCESS.compareToIgnoreCase(jsonupdateloc.get(KEY_STATUS).toString()) == 0) 
     			Log.d("MAPACTIVITY", "successful location update");
     	}catch (JSONException e) {
-    		Log.e("MAPACTIVITY", "JSON exception");
+    		Log.e("MAPACTIVITY", "updateMyLocation(): JSON exception");
             e.printStackTrace();
         } catch (Exception e) {
-        	Log.e("MAPACTIVITY", "Exception");
+        	Log.e("MAPACTIVITY", "updateMyLocation(): Exception");
         	Log.e("MAPACTIVITY", e.getMessage());
         }
 	}
