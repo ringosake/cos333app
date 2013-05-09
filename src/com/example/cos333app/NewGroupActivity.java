@@ -39,9 +39,11 @@ import android.provider.ContactsContract;
 import android.support.v4.app.DialogFragment;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -78,7 +80,6 @@ public class NewGroupActivity extends Activity {
 	public ArrayList<ContactMap> mPeopleList = new ArrayList<ContactMap>();
 	private ArrayList<String> mNames = new ArrayList<String>();
 	private SimpleAdapter mAdapter;
-	boolean[] isSelected;
 	
 	class ContactMap extends HashMap<String, String> { 
 		/**
@@ -128,7 +129,7 @@ public class NewGroupActivity extends Activity {
 	
 	                     //Then add this map to the list.
 	                     mPeopleList.add(NamePhoneType);
-	                     mNames.add(name);
+	                     mNames.add(name.toLowerCase());
 	               }
 	               pCur.close();
 	           }
@@ -136,7 +137,6 @@ public class NewGroupActivity extends Activity {
 	    }
 	    cur.close();
 	    //startManagingCursor(cur);
-	    isSelected = new boolean[mPeopleList.size()];
 	}
 	
 	@Override
@@ -166,7 +166,6 @@ public class NewGroupActivity extends Activity {
         contactView.setThreshold(1);
         contactView.setAdapter(mAdapter);
         
-        
 		this.uf = new UserFunctions();
 		this.image = (ImageView) findViewById(R.id.imageView1);
 		
@@ -188,41 +187,51 @@ public class NewGroupActivity extends Activity {
 	
 	private String[] getInvitees() {
 		ArrayList<String> numbers = new ArrayList<String>();
-		// add the ones with isSelected == true
-		for (int i = 0; i < isSelected.length; i++)
-			if (isSelected[i])
-				numbers.add(PhoneNumberUtils.extractNetworkPortion(mPeopleList.get(i).get("Phone")));
-		
-		String[] invitees = contactView.getText().toString().split(",\\s*"); //
-		for (String name : invitees) {
+		String[] invitees = contactView.getText().toString().split(",\\s*");
+		boolean[] isSelected = new boolean[mPeopleList.size()];
+		for (String invitee : invitees) {
 			// get that contact's number(s)
-			int index = mNames.indexOf(name);
-			// found the name
-			if (index >= 0) {
-				// invite if not already invited
-				int tmp = index;
-				while (tmp < mPeopleList.size()) {
-					Map<String, String> obj = mPeopleList.get(tmp);
-					String foundName = obj.get("Name");
-					if (!foundName.equals(name)) {
-						numbers.add(mPeopleList.get(index).get("Phone"));
-						break;
-					}
-					if (isSelected[tmp]) break;
-					tmp++;
+			int start = invitee.lastIndexOf("<")+1;
+			int end = invitee.lastIndexOf(">");
+			String inviteeMod;
+			if (start > 0 && end == invitee.length()-1) {
+				// name <asdkjklaksjkdl>
+				inviteeMod = invitee.substring(start, end);
+				inviteeMod = PhoneNumberUtils.stripSeparators(invitee);
+				if (inviteeMod.charAt(0) == '+') 
+					inviteeMod = inviteeMod.substring(1);
+				if (PhoneNumberUtils.isWellFormedSmsAddress(invitee)) {
+					numbers.add(inviteeMod);
+				} else { 
+					int index = mNames.indexOf(invitee.toLowerCase());
+					if (index >= 0) {
+						inviteeMod = PhoneNumberUtils.stripSeparators(mPeopleList.get(index).get("Phone"));
+						if (inviteeMod.charAt(0) == '+') 
+							inviteeMod = inviteeMod.substring(1);
+						numbers.add(inviteeMod);
+					} else
+						return null;
 				}
-				if (tmp == mPeopleList.size())
-					numbers.add(PhoneNumberUtils.extractNetworkPortion(mPeopleList.get(index).get("Phone")));
 			} else {
-				String inputAsPhone = PhoneNumberUtils.convertKeypadLettersToDigits(name);
-				inputAsPhone = PhoneNumberUtils.stripSeparators(inputAsPhone); 
-				if (PhoneNumberUtils.isWellFormedSmsAddress(inputAsPhone))
-					numbers.add(inputAsPhone);
-				else
-					return null;
+				int index = mNames.indexOf(invitee.toLowerCase());
+				if (index >= 0) {
+					inviteeMod = PhoneNumberUtils.stripSeparators(mPeopleList.get(index).get("Phone"));
+					if (inviteeMod.charAt(0) == '+') 
+						inviteeMod = inviteeMod.substring(1);
+					numbers.add(inviteeMod);
+				} else {
+					String inputAsPhone = PhoneNumberUtils.convertKeypadLettersToDigits(invitee);
+					inputAsPhone = PhoneNumberUtils.stripSeparators(inputAsPhone); 
+					if (inputAsPhone.charAt(0) == '+') 
+						inputAsPhone = inputAsPhone.substring(1);
+					if (PhoneNumberUtils.isWellFormedSmsAddress(inputAsPhone))
+						numbers.add(inputAsPhone);
+					else 
+						return null;
+				}
 			}
 		}
-		return (String[])numbers.toArray();
+		return numbers.toArray(new String[numbers.size()]);
 	}
 	
 	public void inviteMembers(int groupId, String[] invitees) {
@@ -281,9 +290,20 @@ public class NewGroupActivity extends Activity {
 			show("Malformed phone number entered");
 			return;
 		}
+		Log.d("inviting members", invitees[0]);
+		Log.d("inviting members", invitees[1]);
+		
+		if (groupName.getText().toString() == "") {
+			show("Group name cannot be blank.");
+			return;
+		} else if(!URLUtil.isValidUrl(picURL.getText().toString())) {
+			show("URL not valid.");
+			return;
+		}
 		
 		JSONObject grpJson = uf.createGroup(email, token, groupName.getText().toString(), picURL.getText().toString());
 		try {
+			show("1");
 			Log.d("toString", grpJson.toString());
 			String ourStatus = "";
 			if (grpJson.has(STATUS)) {
@@ -307,7 +327,7 @@ public class NewGroupActivity extends Activity {
 				groupName.setHint("Enter group name");
 				picURL.setText("");
 				picURL.setHint("Enter image URL");
-				
+				show("2");
 				inviteMembers(Integer.parseInt(grpJson.getString("group_id")), invitees);
 				
 				// then end the activity, returning to MainActivity
