@@ -1,6 +1,8 @@
 package com.example.cos333app;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -41,9 +43,10 @@ public class ImageAdapter extends BaseAdapter {
             	file.mkdirs();
             }
             File[] thePics = file.listFiles();
-            File fake = new File(fileStump + File.separator + "MyDownloadedImage.jpg");
+            File fake = new File(fileStump + File.separator + "MyDownloadedImage.jpg"); // dummy file to add to the array we feed to gridview
             if (thePics != null) {
             	this.grpPics = new File[thePics.length + 1];
+            	Arrays.sort(thePics, lastModified);
             } else {
             	this.grpPics = new File[1];
             }
@@ -60,7 +63,9 @@ public class ImageAdapter extends BaseAdapter {
             		grpPics[i] = thePics[i];
             	}
             }
-            grpPics[grpPics.length - 1] = fake;
+            grpPics[grpPics.length - 1] = fake; // if we are at the end of the array, gridview will draw the add group button instead of
+            									// this fake file
+            
         } 
         else 
         {
@@ -81,6 +86,7 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
+    // we probably don't want/need this
     protected void onCreate(Bundle savedInstanceState) {
     	
     }
@@ -108,6 +114,22 @@ public class ImageAdapter extends BaseAdapter {
         textView.setText(String.valueOf(position));
         return view;
     }
+    
+    /**
+     * Sorts an array of files based on order modified. Should put them into queue order (check for wrongness).
+     * See http://www.theeggeadventure.com/wikimedia/index.php/Java_File.listFiles_order
+     */
+    private static final Comparator<File> lastModified = new Comparator<File>() {
+		@Override
+		public int compare(File o1, File o2) {
+			return o1.lastModified() == o2.lastModified() ? 0 : (o1.lastModified() > o2.lastModified() ? 1 : -1 ) ;
+		}
+	};
+	public void testFileSort() throws Exception {
+		File[] files = new File(".").listFiles();
+		Arrays.sort(files, lastModified);
+		System.out.println(Arrays.toString(files));
+	}
     
     /*
     // references to our images
