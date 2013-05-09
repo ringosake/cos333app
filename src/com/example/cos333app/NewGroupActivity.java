@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +21,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,6 +34,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 public class NewGroupActivity extends Activity {
 
@@ -43,6 +49,10 @@ public class NewGroupActivity extends Activity {
 	UserFunctions uf;
 	private static String STATUS = "status";
 	private static String ERROR = "error";
+	ProgressBar progressbar;
+	ImageView imgLogo;
+	private ImageView image;
+	private String groupID = "12"; //TODO: get the real one somehow
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +69,7 @@ public class NewGroupActivity extends Activity {
 		this.email = prefs.getString("app_email", null);
 		this.token = prefs.getString("app_token", null);
 		this.uf = new UserFunctions();
+		this.image = (ImageView) findViewById(R.id.imageView1);
 		
 		btnConfirmGroup.setOnClickListener(new OnClickListener() {
             @Override
@@ -73,48 +84,6 @@ public class NewGroupActivity extends Activity {
 				NewGroupActivity.this.cancelGroup();
 			}
 		});
-	    // LayoutInflater inflater = getActivity().getLayoutInflater();
-
-	    // Inflate and set the layout for the dialog
-	    // Pass null as the parent view because its going in the dialog layout
-	    // builder.setView(inflater.inflate(R.layout.dialog_makegroup, null))
-	    // Add action buttons
-	    //       .setPositiveButton(R.string.create_group, new DialogInterface.OnClickListener() {
-	    //           @Override
-	    //           public void onClick(DialogInterface dialog, int id) {
-	                   // sign in the user ...
-	            	   /*Activity thisActivity = getActivity();
-	            	   EditText groupName = (EditText) thisActivity.findViewById(R.id.groupName);
-	            	   EditText picURL = (EditText) thisActivity.findViewById(R.id.picURL);
-	            	   
-	            	   UserFunctions userFunctions = new UserFunctions();
-	            	   // pull the strings from the edittexts. send groupname to server. get picture using url.
-	       			   JSONObject json = userFunctions.createGroup(userID, groupName.getText().toString(), picURL.getText().toString());
-	       			   Bitmap picture = NewGroupDialogFragment.this.task.doInBackground(picURL.getText().toString()); 
-	       			   */
-	    //           }
-	    //       })
-	    //       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-	    //           public void onClick(DialogInterface dialog, int id) {
-	                   // LoginDialogFragment.this.getDialog().cancel();
-	            	   /*
-	            	   // get the EditTexts and make sure they are cleared of content
-	            	   Activity thisActivity = getActivity();
-	            	   EditText groupName = (EditText) thisActivity.findViewById(R.id.groupName);
-	            	   EditText picURL = (EditText) thisActivity.findViewById(R.id.picURL);
-	            	   
-	            	   groupName.setText("");
-	       			   groupName.setHint("Enter group name");
-	       			   picURL.setText("");
-	       			   picURL.setHint("Enter image URL");
-	            	   
-	            	   // then end the dialog
-	            	   NewGroupDialogFragment.this.getDialog().cancel();*/
-	      //         }
-	      //     });      
-	    //return builder.create();
-
-		
 	}
 	
 	public void confirmGroup() {
@@ -139,7 +108,12 @@ public class NewGroupActivity extends Activity {
 			
 			if (!ourStatus.equals(ERROR)) {
 				Bitmap picture = this.task.doInBackground(picURL.getText().toString());
-		
+				picture = Bitmap.createScaledBitmap(picture, 160, 160, true);
+				BitmapDrawable drawpic = new BitmapDrawable(getResources(), picture);
+				this.image.setImageDrawable(drawpic);
+				
+				this.task.onPostExecute(picture);
+				Log.d("after task", "Finished task.OnPostExecute");
 				groupName.setText("");
 				groupName.setHint("Enter group name");
 				picURL.setText("");
@@ -173,6 +147,60 @@ public class NewGroupActivity extends Activity {
 	    finish();
 	}
 	
+	/*
+	public void btnLoadImageClick(View view)
+    {
+    	//imgLogo.setBackgroundDrawable(LoadImageFromWeb("http://www.android.com/media/wallpaper/gif/android_logo.gif"));
+    	new loadImageTask().execute("http://www.android.com/media/wallpaper/gif/android_logo.gif");
+    }
+    
+    public class loadImageTask extends AsyncTask<String, Void, Void>
+    {
+    	Drawable imgLoad;
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		// TODO Auto-generated method stub
+    		super.onPreExecute();
+    		
+    		progressbar.setVisibility(View.VISIBLE);
+    	}
+    	
+    	@Override
+    	protected Void doInBackground(String... params) {
+    		// TODO Auto-generated method stub
+    		
+    		imgLoad = LoadImageFromWeb(params[0]);
+			return null;
+    	}
+    	
+    	@Override
+    	protected void onPostExecute(Void result) {
+    		// TODO Auto-generated method stub
+    		super.onPostExecute(result);
+    		
+    		if(progressbar.isShown())
+    		{
+    			progressbar.setVisibility(View.GONE);
+    			imgLogo.setVisibility(View.VISIBLE);
+    			imgLogo.setBackgroundDrawable(imgLoad);
+    		}
+    	}
+    }
+    
+    public static Drawable LoadImageFromWeb(String url) 
+    {
+        try 
+        {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    } */
+	
+	
 	// get image from URL
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 	    FileOutputStream fos;
@@ -187,19 +215,31 @@ public class NewGroupActivity extends Activity {
 	            Log.e("Error", e.getMessage());
 	            e.printStackTrace();
 	        }
+	        Log.d("downloaded", "Successfully downloaded file");
 	        return mIcon11;
 	    }
 
 	    protected void onPostExecute(Bitmap bmp) {
 	    	// Do your staff here to save image
 	    	// --- this method will save your downloaded image to SD card ---
-	    	ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+	    	
+	    	//ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+	    	OutputStream fOut = null;
+	    	
 	    	//--- you can select your preferred CompressFormat and quality. 
 	    	//  I'm going to use JPEG and 100% quality ---
-	    	bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+	    	//bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 	    	//--- create a new file on SD card ---
 	    	File file = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
-				 			+ File.separator + "myDownloadedImage.jpg"); // name these dynamically
+				 			+ File.separator + "group_logos" + File.separator + groupID + ".jpg"); // name these dynamically
+	    	Log.d("filez", Environment.getExternalStorageDirectory().toString());
+	    	try {
+	    		fOut = new FileOutputStream(file);
+	    	} catch (Exception e) {
+	    		e.printStackTrace();
+	    	}
+	    	bmp.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+	    	/*
 	    	try {
 	    		file.createNewFile();
 	    	} catch (IOException e) {
@@ -210,16 +250,19 @@ public class NewGroupActivity extends Activity {
 	    		FileOutputStream fos = new FileOutputStream(file);
 	    	} catch (FileNotFoundException e) {
 	    		e.printStackTrace();
-	    	}
+	    	}*/
+	    	Log.d("make file", "Got past the attempt at making a new file");
+	    	/*
 	    	try {
 	    		fos.write(bytes.toByteArray());
 	    		fos.close();
 	    		//Toast.makeText(this, "Image saved", Toast.LENGTH_SHORT).show();
 	    	} catch (IOException e) {
 	    		e.printStackTrace();
-	    	}
+	    	} */
+	    	Log.d("write file", "Got past the attempt to write the data into the new file");
 
-		        		
+		    return;
 	    }
     } 
 	
