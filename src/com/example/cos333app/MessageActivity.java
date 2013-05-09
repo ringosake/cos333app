@@ -26,7 +26,8 @@ public class MessageActivity extends Activity {
 	private int updatetime = 5000; // 5 seconds
 	private Handler handler;
 	private String group = "11"; //TODO: get correct group
-	private long lastMessage;
+	private long lastMessage; // the last time we got a message from the server
+	private int messageLimit = 1000; // store no more than 1k msgs locally
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class MessageActivity extends Activity {
 	     SharedPreferences.Editor mEdit1 = sp.edit();
 	     mEdit1.putInt("Status_size", messages.size()); /*sKey is an array*/ 
 
-	    for (int i = 0; i < messages.size(); i++) {
+	    for (int i = messages.size() - messageLimit; i < messages.size(); i++) {
 	        mEdit1.remove("Status_" + i);
 	        mEdit1.putString("Status_" + i, messages.get(i));  
 	    }
@@ -93,6 +94,11 @@ public class MessageActivity extends Activity {
 	void startRepeatingTask() {
     	messageChecker.run();
     }
+	
+	@Override
+	protected void onDestroy() {
+		
+	}
 	
 	/**
 	 * Continuously (once every updatetime) calls updateMessages().

@@ -59,7 +59,7 @@ public class NewGroupActivity extends Activity {
 	ProgressBar progressbar;
 	ImageView imgLogo;
 	private ImageView image;
-	private String groupID = "12"; //TODO: get the real one somehow
+	private String groupID; //= "12"; //TODO: get the real one somehow
 	
 	// for contact autocomplete
 	MultiAutoCompleteTextView contactView;
@@ -140,7 +140,6 @@ public class NewGroupActivity extends Activity {
 	}
 	
 	public void confirmGroup() {
- 	    //UserFunctions userFunctions = new UserFunctions();
  	    // pull the strings from the edittexts. send groupname to server. get picture using url.
 		
 		if (email == null || token == null) {
@@ -157,9 +156,13 @@ public class NewGroupActivity extends Activity {
 			if (grpJson.has(STATUS)) {
 				ourStatus = grpJson.getString(STATUS);
 			}
+			if (grpJson.has("group_id")) {
+				this.groupID = grpJson.getString("group_id");
+			}
 			//Log.d("JSON status", ourStatus);
 			
-			if (!ourStatus.equals(ERROR)) {
+			// if (!ourStatus.equals(ERROR)) {
+			if (true) {
 				Bitmap picture = this.task.doInBackground(picURL.getText().toString());
 				picture = Bitmap.createScaledBitmap(picture, 160, 160, true);
 				BitmapDrawable drawpic = new BitmapDrawable(getResources(), picture);
@@ -200,60 +203,6 @@ public class NewGroupActivity extends Activity {
 	    finish();
 	}
 	
-	/*
-	public void btnLoadImageClick(View view)
-    {
-    	//imgLogo.setBackgroundDrawable(LoadImageFromWeb("http://www.android.com/media/wallpaper/gif/android_logo.gif"));
-    	new loadImageTask().execute("http://www.android.com/media/wallpaper/gif/android_logo.gif");
-    }
-    
-    public class loadImageTask extends AsyncTask<String, Void, Void>
-    {
-    	Drawable imgLoad;
-    	
-    	@Override
-    	protected void onPreExecute() {
-    		// TODO Auto-generated method stub
-    		super.onPreExecute();
-    		
-    		progressbar.setVisibility(View.VISIBLE);
-    	}
-    	
-    	@Override
-    	protected Void doInBackground(String... params) {
-    		// TODO Auto-generated method stub
-    		
-    		imgLoad = LoadImageFromWeb(params[0]);
-			return null;
-    	}
-    	
-    	@Override
-    	protected void onPostExecute(Void result) {
-    		// TODO Auto-generated method stub
-    		super.onPostExecute(result);
-    		
-    		if(progressbar.isShown())
-    		{
-    			progressbar.setVisibility(View.GONE);
-    			imgLogo.setVisibility(View.VISIBLE);
-    			imgLogo.setBackgroundDrawable(imgLoad);
-    		}
-    	}
-    }
-    
-    public static Drawable LoadImageFromWeb(String url) 
-    {
-        try 
-        {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, "src name");
-            return d;
-        } catch (Exception e) {
-            return null;
-        }
-    } */
-	
-	
 	// get image from URL
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 	    FileOutputStream fos;
@@ -284,8 +233,15 @@ public class NewGroupActivity extends Activity {
 	    	//bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 	    	//--- create a new file on SD card ---
 	    	File file = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
-				 			+ File.separator + "group_logos" + File.separator + groupID + ".jpg"); // name these dynamically
+				 			+ File.separator + "group_logos" + File.separator + NewGroupActivity.this.email + File.separator + groupID + ".jpg"); // name these dynamically
 	    	Log.d("filez", Environment.getExternalStorageDirectory().toString());
+	    	if (!file.exists()) {
+	    		try {
+	    			file.createNewFile();
+	    		} catch (IOException e) {
+	    			e.printStackTrace();
+	    		}
+	    	}
 	    	try {
 	    		fOut = new FileOutputStream(file);
 	    	} catch (Exception e) {

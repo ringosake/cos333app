@@ -3,11 +3,13 @@ package com.example.cos333app;
 import java.io.File;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,16 +34,31 @@ public class ImageAdapter extends BaseAdapter {
         {
             File homeDir = Environment.getExternalStorageDirectory();
             String fileStump = homeDir.toString();
-            File file = new File(fileStump + File.separator + "group_logos" + File.separator);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+    		String email = prefs.getString("app_email", null);
+            File file = new File(fileStump + File.separator + "group_logos" + File.separator + email);
+            if (!file.exists()) {
+            	file.mkdirs();
+            }
             File[] thePics = file.listFiles();
             File fake = new File(fileStump + File.separator + "MyDownloadedImage.jpg");
-            this.grpPics = new File[thePics.length + 1]; 
+            if (thePics != null) {
+            	this.grpPics = new File[thePics.length + 1];
+            } else {
+            	this.grpPics = new File[1];
+            }
+            
+            // call server to check for changes in group URL?
+            // String [] groups = UserFunctions.getMembershipsByUser();
+            
             
             // we want an array with one extra element - we need one spot for each image file and one extra for the 
             // image button at the end.
-            for (int i = 0; i < thePics.length; i++)
-            {
-            	grpPics[i] = thePics[i];
+            if (thePics != null) {
+            	for (int i = 0; i < thePics.length; i++)
+            	{
+            		grpPics[i] = thePics[i];
+            	}
             }
             grpPics[grpPics.length - 1] = fake;
         } 
