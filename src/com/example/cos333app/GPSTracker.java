@@ -33,7 +33,7 @@ public class GPSTracker extends Service implements LocationListener {
     int debugging = 0;
  
     // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 1 meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meters
  
     // The minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 100; // 1 second
