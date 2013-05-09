@@ -77,7 +77,7 @@ public class GPSTracker extends Service implements LocationListener {
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
-                            Log.e("GPSTRACK", "NETWORK: lat " + latitude + " | long " + longitude);
+                            Log.d("GPSTRACK", "NETWORK: lat " + latitude + " | long " + longitude);
                             debugging = 1;
                         }
                         else 
@@ -98,7 +98,7 @@ public class GPSTracker extends Service implements LocationListener {
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
-                                Log.e("GPSTRACK", "GPS: lat " + latitude + " | long " + longitude);
+                                Log.d("GPSTRACK", "GPS: lat " + latitude + " | long " + longitude);
                                 debugging = 3;
                             }
                             else
