@@ -135,6 +135,20 @@ public class MapActivity extends FragmentActivity {
 	    startActivity(intent);
 	}
 	
+	public void viewAll(View view) {
+		// recompute bounding box for everyone 
+		if (locations.size() > 0) {
+			bounds = new LatLngBounds(locations.get(0), locations.get(0));
+			for (int i = 1; i < locations.size(); i++)
+				bounds = bounds.including(locations.get(i));
+			moveCameraView();
+		}
+		else {
+			Log.e("MAPACTIVITY", "no locations");
+			moveCameraView(latitude, longitude);
+		}
+	}
+	
 	private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -178,6 +192,7 @@ public class MapActivity extends FragmentActivity {
         mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition arg0) {
+            	Log.d("MAPACTIVITY", "initializing camera to bounds: " + bounds);
                 // Move camera.
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 80));
                 // Remove listener to prevent position reset on camera move.
@@ -197,6 +212,7 @@ public class MapActivity extends FragmentActivity {
 		Log.d("MAPACTIVITY", "setting camera to bounds: " + bounds);
 		if (bounds != null) mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
 	}
+	
 	/* compute latlngbounds from users */
 	private void computeBounds(int[] users) {
 		boolean first = true;
