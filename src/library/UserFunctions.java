@@ -61,12 +61,14 @@ public class UserFunctions {
      * */
     public JSONObject createGroup(String email, String token, String groupName, String picURL) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		Log.d("email and token", email + " " + token);
 		params.add(new BasicNameValuePair("tag", createGroup_tag));
 		params.add(new BasicNameValuePair("email", email));
-		params.add(new BasicNameValuePair("access_token", token));
+		params.add(new BasicNameValuePair("token", token)); // access_token?
 		params.add(new BasicNameValuePair("group_name", groupName));
 		params.add(new BasicNameValuePair("picture_url", picURL));
 		JSONObject json = jsonParser.getJSONFromUrl(makeGroupURL, params);
+		//Log.e("JSON", json.toString());
 		return json;
 	}
     
@@ -134,14 +136,12 @@ public class UserFunctions {
 	/**
      * function update location of user
      * @param email
-     * @param password
+     * @param token
      * @param latitude
      * @param longitude
      * */
     public JSONObject updateLocation(String email, String token,
     		double latitude, double longitude){
-    	Log.e("DATABASE", "lat: "+latitude+", long "+longitude);
-    	Log.e("DATABASE", "email: "+email+", token: "+token);
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", updateloc_tag));
@@ -153,6 +153,24 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("bearing", "0"));
         params.add(new BasicNameValuePair("accuracy", "0"));
         params.add(new BasicNameValuePair("speed", "0"));
+        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+        if (json == null) Log.e("JSON", "json null");
+        return json;
+    }
+    /**
+     * function update location of user
+     * @param email
+     * @param token
+     * @param groupid
+     * */
+    public JSONObject retrieveAllLocations(String email, String token, int groupid){
+    	Log.e("DATABASE", "group: "+groupid+"email: "+email+", token: "+token);
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", retrievealllocs_tag));
+        params.add(new BasicNameValuePair("email", email));
+        params.add(new BasicNameValuePair("token", token));
+        params.add(new BasicNameValuePair("group_id", String.valueOf(groupid)));
         Log.e("DATABASE", "sending params");
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         if (json == null) Log.e("JSON", "json null");
