@@ -50,7 +50,7 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("access_token", token));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         // return json
-     // Log.e("JSON", json.toString());
+        //Log.e("USERFUNC_LOGIN", json.toString());
         return json;
     }
     
@@ -154,7 +154,8 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("accuracy", "0"));
         params.add(new BasicNameValuePair("speed", "0"));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
-        if (json == null) Log.e("JSON", "json null");
+        if (json == null) Log.e("USERFUNC", "update location: json null");
+        //Log.e("USERFUNC_UPDATELOC", json.toString());
         return json;
     }
     /**
@@ -164,17 +165,18 @@ public class UserFunctions {
      * @param groupid
      * */
     public JSONObject retrieveAllLocations(String email, String token, int groupid){
-    	Log.e("DATABASE", "group: "+groupid+"email: "+email+", token: "+token);
+    	if (email == null || token == null) Log.e("USERFUNC_RETRIEVE", "token NULL");
+    	Log.d("USERFUNC_RETRIEVE", "group: "+groupid+", email: "+email);
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", retrievealllocs_tag));
         params.add(new BasicNameValuePair("email", email));
         params.add(new BasicNameValuePair("token", token));
         params.add(new BasicNameValuePair("group_id", String.valueOf(groupid)));
-        Log.e("DATABASE", "sending params");
+        Log.d("USERFUNC_RETRIEVE", "sending params");
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
-        if (json == null) Log.e("JSON", "json null");
-        Log.e("JSON", json.toString());
+        if (json == null) Log.e("USERFUNC", "retrieve locations: json null");
+        Log.d("USERFUNC_RETREIVE", json.toString());
         return json;
     }
 }
