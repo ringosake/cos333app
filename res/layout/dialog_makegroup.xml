@@ -1,102 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
     android:background="#eeeeee" >
- 
-    <LinearLayout
+
+<RelativeLayout 
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#eeeeee" >
+
+    <!-- View Title Label -->
+
+    <TextView
+        android:id="@+id/TextView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dip" >
-        <!--  View Title Label -->
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginTop="30dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Create new group"
+        android:textSize="24sp" />
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
-            android:gravity="center_vertical|center_horizontal"
-            android:text="Create new group"
-            android:textSize="25dip"
-            android:textStyle="bold" />
+    <!-- Group Name EditText -->
 
-        <!--  Group Name EditText -->
+    <EditText
+        android:id="@+id/groupName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/TextView1"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="16dp"
+        android:hint="Enter group name"
+        android:inputType="textPersonName"
+        android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/groupName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="16dp"
-            android:hint="Enter group name"
-            android:inputType="textPersonName"
-            android:textSize="12sp" />
- 
-        <!--  Image URL EditText -->
+    <!-- Image URL EditText -->
 
-        <EditText
-            android:id="@+id/picURL"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="4dp"
-            android:fontFamily="sans-serif"
-            android:hint="Enter image URL"
-            android:inputType="textUri"
-            android:textSize="12sp" />
-        
-        <!--  Contacts selector -->
+    <EditText
+        android:id="@+id/picURL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/groupName"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
+        android:hint="Enter image URL"
+        android:inputType="textUri"
+        android:textSize="14sp" />
 
- 		<MultiAutoCompleteTextView
- 		    android:id="@+id/multiautocomp_contacts"
- 		    android:layout_width="match_parent"
- 		    android:layout_height="wrap_content"
- 		    android:layout_margin="4dp"
- 		    android:layout_weight="0.15"
- 		    android:hint="Enter group members seperated by commas"
- 		    android:textColor="#000000"
- 		    android:textSize="12sp" />
- 
-        <!--  Error message -->
- 
-        <!--  Login Button -->
+    <!-- Contacts selector -->
 
-        <Button
-            android:id="@+id/btnConfirmGroup"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:background="#f04f32"
-            android:minHeight="48dp"
-            android:text="Add Group"
-            android:textColor="#FFF"
-            android:textSize="16sp" />
+    <MultiAutoCompleteTextView
+        android:id="@+id/multiautocomp_contacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/picURL"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_weight="0.15"
+        android:hint="Enter group members seperated by commas"
+        android:textColor="#000000"
+        android:textSize="14sp" />
 
-        <Button
-            android:id="@+id/btnCancelGroup"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#404040"
-            android:minHeight="48dp"
-            android:text="Cancel"
-            android:textColor="#FFF"
-            android:textSize="16sp" />
- 
-        <!--  Link to Registration Screen -->
+    <!-- Error message -->
 
-        <TextView
-            android:id="@+id/group_error"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dip"
-            android:textColor="#e30000"
-            android:textStyle="bold" />
 
-    </LinearLayout>
- 
+    <!-- Login Button -->
+
+    <Button
+        android:id="@+id/btnConfirmGroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/multiautocomp_contacts"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/orangebutton"
+        android:minHeight="48dp"
+        android:text="Add Group"
+        android:textColor="#FFF"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btnCancelGroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btnConfirmGroup"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/greybutton"
+        android:minHeight="48dp"
+        android:text="Cancel"
+        android:textColor="#FFF"
+        android:textSize="16sp" />
+
+    <!-- Link to Registration Screen -->
+
+    <TextView
+        android:id="@+id/group_error"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btnCancelGroup"
+        android:layout_marginTop="15dp"
+        android:padding="10dip"
+        android:textColor="@color/button_orange_up"
+        android:textStyle="bold" />
+
+</RelativeLayout>
 </ScrollView>

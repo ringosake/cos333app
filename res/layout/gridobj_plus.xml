@@ -7,12 +7,12 @@
     android:background="#FFF"
     android:onClick="openNewMap" >
     
-	<ImageView 
+	<ImageView
 	    android:id="@+id/plusid"
 	    android:layout_width="match_parent"
-		android:layout_height="match_parent"
-	    android:layout_centerInParent="true" 
-	    android:scaleType="centerCrop"
-	    android:src="@drawable/plus" />
+	    android:layout_height="match_parent"
+	    android:layout_centerInParent="true"
+	    android:background="@drawable/buttonplus"
+	    android:scaleType="centerCrop" />
 	
 </RelativeLayout>
