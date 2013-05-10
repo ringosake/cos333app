@@ -50,8 +50,7 @@ public class ImageAdapter extends BaseAdapter {
             if (thePics != null) {
             	this.grpPics = new File[thePics.length + 1];
             	Arrays.sort(thePics, lastModified);
-            	Log.d("FIRSTPIC", thePics[0].toString());
-            	for (int j = 1; j < thePics.length; j++) {
+            	for (int j = 0; j < thePics.length; j++) {
             		Log.d(Integer.toString(j) + "PIC", thePics[j].toString());
             	}
             } else {
