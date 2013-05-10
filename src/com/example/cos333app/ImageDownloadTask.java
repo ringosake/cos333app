@@ -34,6 +34,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
         	this.groupID = urls[2];
         //}
         Bitmap mIcon11 = null;
+        urldisplay = urldisplay.replace(" ", "");
         if (!URLUtil.isValidUrl(urldisplay)) {
         	urldisplay = backupLink;
         	try {
@@ -67,9 +68,15 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
     	//  I'm going to use JPEG and 100% quality ---
     	//bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
     	//--- create a new file on SD card ---
-    	File file = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
-			 			+ File.separator + "group_logos" + File.separator + this.email + File.separator + this.groupID + ".jpg"); // name these dynamically
-    	Log.d("filez", Environment.getExternalStorageDirectory().toString());
+    	String userName = this.email;
+    	userName = userName.replace("@", "");
+    	userName = userName.replace(".", "");
+    	File fileStump = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
+			 			+ File.separator + "group_logos" + File.separator + userName + File.separator); // + this.groupID + ".jpg"); // name these dynamically
+    	if (!fileStump.exists())	
+        	fileStump.mkdirs();
+    	File file = new File(fileStump.toString() + this.groupID + ".jpg");
+        Log.d("filez", Environment.getExternalStorageDirectory().toString());
     	if (!file.exists()) {
     		try {
     			file.createNewFile();

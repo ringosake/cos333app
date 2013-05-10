@@ -120,6 +120,12 @@ public class MapActivity extends FragmentActivity {
 		uid = Integer.parseInt(prefs.getString("app_uid", null));
 		userFunctions = new UserFunctions();
 		
+		// get extra to identify group
+		Intent intent = getIntent();
+		String gid = intent.getStringExtra("group_id");
+		Log.d("MAPACTIVITY", "came from group " + gid);
+		// groupid = Integer.parseInt(gid);
+		
 		handler = new Handler();
         markers = new LinkedList<Marker>();
         locations = new LinkedList<LatLng>();
@@ -138,9 +144,37 @@ public class MapActivity extends FragmentActivity {
         startRepeatingTask();
 	}
 	
+	private void cleanup() { // clean up all information related to this map
+		stopRepeatingTask();
+		if (markers != null) markers.clear();
+		if (locations != null) locations.clear();
+		if (userToIndex != null) userToIndex.clear();
+		if (validusers != null) validusers.clear();
+		if (trails != null) trails.clear();
+		if (traillines != null) traillines.clear();
+		if (trailhues != null) trailhues.clear();
+		hsvcolour[0] = 0;
+        hsvcolour[1] = HSV_SATURATION;
+        hsvcolour[2] = HSV_VALUE;
+        bounds = null;
+        cur_location = null;
+        nextcolour = 0;
+        SHOW_TRAILS = false;
+	}
+	
 	@Override
     protected void onResume() {
         super.onResume();
+        
+        // get extra to identify group
+        /*Intent intent = getIntent();
+     	String gid = intent.getStringExtra("group_id");
+     	int igid = Integer.parseInt(gid);
+        if (igid != groupid) {
+        	groupid = igid;
+        	cleanup();
+        }
+        */
         setUpMapIfNeeded();
         startRepeatingTask();
     }

@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -47,6 +50,9 @@ public class ImageAdapter extends BaseAdapter {
             if (thePics != null) {
             	this.grpPics = new File[thePics.length + 1];
             	Arrays.sort(thePics, lastModified);
+            	for (int j = 0; j < thePics.length; j++) {
+            		Log.d(Integer.toString(j) + "PIC", thePics[j].toString());
+            	}
             } else {
             	this.grpPics = new File[1];
             }
@@ -96,6 +102,28 @@ public class ImageAdapter extends BaseAdapter {
         View view;
         view = new View(mContext);
         LayoutInflater inflater = LayoutInflater.from(mContext);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String userID = prefs.getString("app_uid", null);
+        String email = prefs.getString("app_email", null);
+        String info = prefs.getString(email + "_memberships", null);
+        String groupName = null;
+        String groupID = null;
+        
+        try {
+        	//Log.d("info", info);
+        	//Log.d("pos", Integer.toString(position));
+        	JSONObject json = new JSONObject(info);
+        	int jsonPosition = 4 + position;
+        	JSONObject curr = json.getJSONObject(Integer.toString(jsonPosition));
+        	groupName = curr.getString("group_name");
+        	groupID = curr.getString("group_id");
+        } catch (JSONException e) {
+        	e.printStackTrace();
+        }
+        String userName = email.replace("@", "");
+        userName = userName.replace(".", "");
+        File file = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
+	 			+ File.separator + "group_logos" + File.separator + userName + File.separator + groupID + ".jpg");
         
        // if (position==(mThumbIds.length - 1)) { // if we're at a position beyond all the images?
         if (position == grpPics.length - 1) { //TODO: Check for off by 1 error
@@ -105,13 +133,17 @@ public class ImageAdapter extends BaseAdapter {
         view=inflater.inflate(R.layout.gridobj, parent, false);
         ImageView imageView = (ImageView)view.findViewById(R.id.imagepart);
         //imageView.setImageResource(mThumbIds[position]);
-        Bitmap bmp = BitmapFactory.decodeFile(grpPics[position].toString());
+        //Bitmap bmp = BitmapFactory.decodeFile(grpPics[position].toString());
+        Bitmap bmp = BitmapFactory.decodeFile(file.toString());
         BitmapDrawable drawpic = new BitmapDrawable(bmp);
         imageView.setImageDrawable(drawpic);
         TextView textView = (TextView)view.findViewById(R.id.textpart1);
-        textView.setText(String.valueOf(position));
+        // textView.setText(String.valueOf(position));
+        textView.setText(groupName);
         textView = (TextView)view.findViewById(R.id.textpart2);
         textView.setText(String.valueOf(position));
+        // set onClick for view?
+        
         return view;
     }
     
