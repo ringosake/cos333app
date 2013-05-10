@@ -164,7 +164,7 @@ public class NewGroupActivity extends Activity {
 			// if (!ourStatus.equals(ERROR)) {
 			if (true) {
 				Bitmap picture = this.task.doInBackground(picURL.getText().toString());
-				picture = Bitmap.createScaledBitmap(picture, 160, 160, true);
+				picture = Bitmap.createScaledBitmap(picture, 160, 160, true); // check these numbers
 				BitmapDrawable drawpic = new BitmapDrawable(getResources(), picture);
 				this.image.setImageDrawable(drawpic);
 				
