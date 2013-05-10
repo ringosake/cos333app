@@ -388,8 +388,12 @@ public class NewGroupActivity extends Activity {
 	    	//  I'm going to use JPEG and 100% quality ---
 	    	//bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 	    	//--- create a new file on SD card ---
+	    	String userName = NewGroupActivity.this.email;
+	    	userName = userName.replace("@", "");
+	    	userName = userName.replace(".", "");
+	    	
 	    	File file = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
-				 			+ File.separator + "group_logos" + File.separator + NewGroupActivity.this.email + File.separator + groupID + ".jpg"); // name these dynamically
+				 			+ File.separator + "group_logos" + File.separator + userName + File.separator + groupID + ".jpg"); // name these dynamically
 	    	Log.d("filez", Environment.getExternalStorageDirectory().toString());
 	    	if (!file.exists()) {
 	    		try {
@@ -416,7 +420,7 @@ public class NewGroupActivity extends Activity {
 	    	} catch (FileNotFoundException e) {
 	    		e.printStackTrace();
 	    	}*/
-	    	Log.d("make file", "Got past the attempt at making a new file");
+	    	//Log.d("make file", "Got past the attempt at making a new file");
 	    	/*
 	    	try {
 	    		fos.write(bytes.toByteArray());
@@ -425,7 +429,7 @@ public class NewGroupActivity extends Activity {
 	    	} catch (IOException e) {
 	    		e.printStackTrace();
 	    	} */
-	    	Log.d("write file", "Got past the attempt to write the data into the new file");
+	    	//Log.d("write file", "Got past the attempt to write the data into the new file");
 
 		    return;
 	    }

@@ -110,8 +110,8 @@ public class ImageAdapter extends BaseAdapter {
         String groupID = null;
         
         try {
-        	Log.d("info", info);
-        	Log.d("pos", Integer.toString(position));
+        	//Log.d("info", info);
+        	//Log.d("pos", Integer.toString(position));
         	JSONObject json = new JSONObject(info);
         	int jsonPosition = 4 + position;
         	JSONObject curr = json.getJSONObject(Integer.toString(jsonPosition));
@@ -120,8 +120,10 @@ public class ImageAdapter extends BaseAdapter {
         } catch (JSONException e) {
         	e.printStackTrace();
         }
+        String userName = email.replace("@", "");
+        userName = userName.replace(".", "");
         File file = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
-	 			+ File.separator + "group_logos" + File.separator + email + File.separator + groupID + ".jpg");
+	 			+ File.separator + "group_logos" + File.separator + userName + File.separator + groupID + ".jpg");
         
        // if (position==(mThumbIds.length - 1)) { // if we're at a position beyond all the images?
         if (position == grpPics.length - 1) { //TODO: Check for off by 1 error

@@ -68,12 +68,15 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
     	//  I'm going to use JPEG and 100% quality ---
     	//bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
     	//--- create a new file on SD card ---
+    	String userName = this.email;
+    	userName = userName.replace("@", "");
+    	userName = userName.replace(".", "");
     	File fileStump = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
 			 			+ File.separator + "group_logos" + File.separator + this.email + File.separator); // + this.groupID + ".jpg"); // name these dynamically
     	if (!fileStump.exists())	
         	fileStump.mkdirs();
     	File file = new File(fileStump.toString() + this.groupID + ".jpg");
-    	// Log.d("filez", Environment.getExternalStorageDirectory().toString());
+        Log.d("filez", Environment.getExternalStorageDirectory().toString());
     	if (!file.exists()) {
     		try {
     			file.createNewFile();
@@ -100,7 +103,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
     	} catch (FileNotFoundException e) {
     		e.printStackTrace();
     	}*/
-    	// Log.d("make file", "Got past the attempt at making a new file");
+    	Log.d("make file", "Got past the attempt at making a new file");
     	/*
     	try {
     		fos.write(bytes.toByteArray());
@@ -109,7 +112,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
     	} catch (IOException e) {
     		e.printStackTrace();
     	} */
-    	// Log.d("write file", "Got past the attempt to write the data into the new file");
+    	Log.d("write file", "Got past the attempt to write the data into the new file");
 
 	    return;
     }

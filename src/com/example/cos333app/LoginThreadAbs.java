@@ -289,8 +289,11 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
     private void reorderImages(String userEmail, JSONObject json2, SharedPreferences prefs) {
     	// cycle through this user's group image files in order determined by group join date
     	// update the timestamps of each image to match this ordering
+    	String userName = prefs.getString("app_email", null);
+    	userName = userName.replace("@", "");
+    	userName = userName.replace(".", "");
     	File fileStump = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
-	 			+ File.separator + "group_logos" + File.separator + prefs.getString("app_email", null) + File.separator); // + groupID + ".jpg");
+	 			+ File.separator + "group_logos" + File.separator + userName + File.separator); // + groupID + ".jpg");
     	if (!fileStump.exists())
     		fileStump.mkdirs();
     	
