@@ -34,6 +34,7 @@ public class UserFunctions {
     private static String updateloc_tag = "update_location";
     private static String retrivemyloc_tag = "retrieve_my_location";
     private static String retrievealllocs_tag = "retrieve_group_members_location";
+    private static String getMemberships_tag = "get_my_groups_details";
     
     // constructor
     public UserFunctions(){
@@ -92,6 +93,21 @@ public class UserFunctions {
 		//Log.e("JSON", json.toString());
 		return json;
 	}
+    
+    /**
+     * Gets membership information about the current user.
+     * @param email
+     * @param token
+     * @return
+     */
+    public JSONObject getMemberships(String email, String token) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", getMemberships_tag));
+		params.add(new BasicNameValuePair("email", email));
+		params.add(new BasicNameValuePair("token", token));
+		JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+		return json;
+    }
     
     /**
      * function request all new messages in a particular group from server. Note: time indicates the
