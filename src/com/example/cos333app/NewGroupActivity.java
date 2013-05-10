@@ -420,7 +420,7 @@ public class NewGroupActivity extends Activity {
 	    	} catch (FileNotFoundException e) {
 	    		e.printStackTrace();
 	    	}*/
-	    	//Log.d("make file", "Got past the attempt at making a new file");
+	    	Log.d("make file", "Got past the attempt at making a new file");
 	    	/*
 	    	try {
 	    		fos.write(bytes.toByteArray());
@@ -429,7 +429,7 @@ public class NewGroupActivity extends Activity {
 	    	} catch (IOException e) {
 	    		e.printStackTrace();
 	    	} */
-	    	//Log.d("write file", "Got past the attempt to write the data into the new file");
+	    	Log.d("write file", "Got past the attempt to write the data into the new file");
 
 		    return;
 	    }

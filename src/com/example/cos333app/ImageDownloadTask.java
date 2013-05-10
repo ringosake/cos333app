@@ -72,7 +72,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
     	userName = userName.replace("@", "");
     	userName = userName.replace(".", "");
     	File fileStump = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
-			 			+ File.separator + "group_logos" + File.separator + this.email + File.separator); // + this.groupID + ".jpg"); // name these dynamically
+			 			+ File.separator + "group_logos" + File.separator + userName + File.separator); // + this.groupID + ".jpg"); // name these dynamically
     	if (!fileStump.exists())	
         	fileStump.mkdirs();
     	File file = new File(fileStump.toString() + this.groupID + ".jpg");
