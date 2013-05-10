@@ -96,7 +96,7 @@ public class MapActivity extends FragmentActivity {
     	// query location
     	if(gps.canGetLocation()){
             cur_location = gps.getLocation();
-            //updateMyLocation();
+            updateMyLocation();
         }
     	else {
     		Log.e("MAPACTIVITY", "couldn't get gps location");
