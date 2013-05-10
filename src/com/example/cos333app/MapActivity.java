@@ -196,6 +196,7 @@ public class MapActivity extends FragmentActivity {
 					foundvaliduser = true;
 					Polyline pline = mMap.addPolyline(trails.get(i));
 					pline.setColor(trailhues.get(i));
+					pline.setWidth(5);
 					traillines.add(pline);
 				}
 			}
@@ -220,6 +221,7 @@ public class MapActivity extends FragmentActivity {
 					foundvaliduser = true;
 					Polyline pline = mMap.addPolyline(trails.get(i));
 					pline.setColor(trailhues.get(i));
+					pline.setWidth(5);
 					traillines.add(pline);
 				}
 			}
