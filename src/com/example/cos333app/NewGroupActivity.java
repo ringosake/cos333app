@@ -394,7 +394,8 @@ public class NewGroupActivity extends Activity {
 	    	
 	    	File file = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
 				 			+ File.separator + "group_logos" + File.separator + userName + File.separator + groupID + ".jpg"); // name these dynamically
-	    	Log.d("filez", Environment.getExternalStorageDirectory().toString());
+	    	Log.d("filename", file.toString());
+	    	// Log.d("filez", Environment.getExternalStorageDirectory().toString());
 	    	if (!file.exists()) {
 	    		try {
 	    			file.createNewFile();
