@@ -1,6 +1,7 @@
 package com.example.cos333app;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import library.UserFunctions;
 
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 public class NotificationActivity extends Activity {
 
@@ -25,9 +27,7 @@ public class NotificationActivity extends Activity {
     //private int uid;
 	
 	// message info
-	private ArrayList<String> messagelist;
-	//private ArrayAdapter adapter;
-	private ArrayList<Integer> messagetypes;
+	private ArrayList<HashMap<String, String>> messagelist;
     
     private static String KEY_STATUS = "status";
     private static String VAL_SUCCESS = "success";
@@ -65,8 +65,7 @@ public class NotificationActivity extends Activity {
 		// query database for all notifications associated with this userid
 		int numnotifs = 0;
 		int type = -1;
-		messagelist = new ArrayList<String>();
-		messagetypes = new ArrayList<Integer>();
+		messagelist = new ArrayList<HashMap<String, String>>();
 		JSONObject json = userFunctions.retrieveNotifications(email, token);
 		
     	try {
@@ -86,15 +85,13 @@ public class NotificationActivity extends Activity {
 	    				switch (type) {
 		    			case TYPE_INVITE: 
 		    				Log.d("NOTIFICATION_ACTIVITY", "a notif");
-		    				message = getInviteMessage(jsonnotif);
+		    				HashMap<String, String> tmp = getInviteMessage(jsonnotif);
+		    				if (tmp != null)
+		    					messagelist.add(tmp);
 		    				break;
 		    			default:
 		    				Log.e("NOTIFICATION_ACTIVITY", "type " + type + " not supported");
 		    				break;
-		    			}
-		    			if (message != null) {
-		    				messagelist.add(message);
-		    				messagetypes.add(type);
 		    			}
     				}
     			}
@@ -106,7 +103,7 @@ public class NotificationActivity extends Activity {
         	Log.e("NOTIFICATION_ACTIVITY", "retrieveNotifications: Exception");
         	Log.e("NOTIFICATION_ACTIVITY", e.getMessage());
         }
-    	final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messagelist);
+    	final SimpleAdapter adapter = new SimpleAdapter(this, messagelist, R.layout.custnotif ,new String[] { "user", "group"}, new int[] { R.id.notifname, R.id.notifgroup});
 		ListView listview = (ListView) findViewById(R.id.listview);
 		listview.setAdapter(adapter);
 		listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,7 +118,8 @@ public class NotificationActivity extends Activity {
 		});
 	}
 	
-	private String getInviteMessage(JSONObject json) {
+	private HashMap<String, String> getInviteMessage(JSONObject json) {
+		HashMap<String, String> hm = new HashMap<String, String>();
 		String username = "", groupname = "";
 		Log.d("NOTIFICATION_ACTIVITY", json.toString());
 		try {
@@ -130,11 +128,15 @@ public class NotificationActivity extends Activity {
 		}catch (JSONException e) {
     		Log.e("NOTIFICATION_ACTIVITY", "getInviteMessage(): JSON exception");
             e.printStackTrace();
+            return null;
         } catch (Exception e) {
         	Log.e("NOTIFICATION_ACTIVITY", "getInviteMessage(): Exception");
         	Log.e("NOTIFICATION_ACTIVITY", e.getMessage());
+        	return null;
         }
-		return (username + " invited you to join the group " + groupname);
+		hm.put("user", username);
+		hm.put("group", groupname);
+		return hm;
 	}
 
 }
