@@ -33,7 +33,7 @@ public class NotificationActivity extends Activity {
     private static String VAL_SUCCESS = "success";
     private static String KEY_NUMNOTIFS = "num_notifs";
     private static String KEY_TYPE = "type";
-    private static String KEY_USERNAME = "user_name";
+    private static String KEY_USERNAME = "inviter_user_name";
     private static String KEY_GROUPNAME = "group_name";
     private static final int TYPE_INVITE = 0;
     
@@ -68,21 +68,25 @@ public class NotificationActivity extends Activity {
 		messagelist = new ArrayList<String>();
 		messagetypes = new ArrayList<Integer>();
 		JSONObject json = userFunctions.retrieveNotifications(email, token);
+		
     	try {
     		if (json.getString(KEY_STATUS) != null && 
     				VAL_SUCCESS.compareToIgnoreCase(json.get(KEY_STATUS).toString()) == 0) { 
     			if (json.getString(KEY_NUMNOTIFS) != null) { numnotifs = json.getInt(KEY_NUMNOTIFS); }
     			Log.d("NOTIFICATION_ACTIVITY", "found " + numnotifs + " notifications");
     			// iterate through notifications
-    			for (int n = 0; n < numnotifs; n++) {
+    			for (int n = 4; n < numnotifs+4; n++) {
     				JSONObject jsonnotif = null;
     				if (json.getString(Integer.toString(n)) != null) {
+    					
     					jsonnotif = json.getJSONObject(Integer.toString(n));
 	    				String message = null;
-		    			if (json.getString(KEY_TYPE) != null) { type = json.getInt(KEY_TYPE); }
-		    			switch (type) {
+		    			//if (json.getString(KEY_TYPE) != null) { type = json.getInt(KEY_TYPE); }
+		    			type = TYPE_INVITE;
+	    				switch (type) {
 		    			case TYPE_INVITE: 
-		    				message = getInviteMessage(json);
+		    				Log.d("NOTIFICATION_ACTIVITY", "a notif");
+		    				message = getInviteMessage(jsonnotif);
 		    				break;
 		    			default:
 		    				Log.e("NOTIFICATION_ACTIVITY", "type " + type + " not supported");
@@ -119,9 +123,10 @@ public class NotificationActivity extends Activity {
 	
 	private String getInviteMessage(JSONObject json) {
 		String username = "", groupname = "";
+		Log.d("NOTIFICATION_ACTIVITY", json.toString());
 		try {
-			if (json.getString(KEY_USERNAME) != null) { username = json.get(KEY_USERNAME).toString(); }
-			if (json.getString(KEY_GROUPNAME) != null) { groupname = json.get(KEY_GROUPNAME).toString(); }
+			username = json.get(KEY_USERNAME).toString();
+			groupname = json.get(KEY_GROUPNAME).toString();
 		}catch (JSONException e) {
     		Log.e("NOTIFICATION_ACTIVITY", "getInviteMessage(): JSON exception");
             e.printStackTrace();
