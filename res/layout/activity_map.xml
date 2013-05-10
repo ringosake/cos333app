@@ -100,28 +100,28 @@
         <Button
             android:id="@+id/buttontrails"
             android:layout_width="60dp"
-            android:layout_height="20dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="10dp"
-            android:background="#fff"
+            android:layout_weight="3.57"
+            android:background="@drawable/orangebutton"
             android:onClick="viewTrails"
             android:padding="5dp"
             android:text="View Trails"
-            android:textColor="#000"
+            android:textColor="#fff"
             android:textSize="10sp" />
 
         <Button
             android:id="@+id/buttonchangebounds"
             android:layout_width="60dp"
-            android:layout_height="20dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
-            android:background="#fff"
+            android:background="@drawable/orangebutton"
             android:onClick="viewAll"
             android:padding="5dp"
             android:text="View All"
-            android:textColor="#000"
+           android:textColor="#fff"
             android:textSize="10sp" />
-
     </LinearLayout>
 
 </FrameLayout>
