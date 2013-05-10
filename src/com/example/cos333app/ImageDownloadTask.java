@@ -34,6 +34,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
         	this.groupID = urls[2];
         //}
         Bitmap mIcon11 = null;
+        urldisplay = urldisplay.replace(" ", "");
         if (!URLUtil.isValidUrl(urldisplay)) {
         	urldisplay = backupLink;
         	try {
