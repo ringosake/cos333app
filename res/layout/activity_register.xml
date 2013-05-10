@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#eeeeee" >
+    android:background="#c5c5c5" >
  
     <LinearLayout
         android:layout_width="fill_parent"
@@ -15,15 +15,16 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="100dp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="20dp"
             android:layout_weight="0.43"
-            android:background="#ffff00"
+            android:background="#ffffff"
             android:gravity="bottom|center"
-            android:padding="10dp"
+            android:padding="0dp"
             android:text="ubiquitus"
-            android:textColor="#111111"
-            android:textSize="36sp"
-            android:textStyle="bold" />
+            android:textColor="#c5c5c5"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:typeface="serif" />
 
         <!-- Name Label -->
 
@@ -33,10 +34,21 @@
 
         <!-- Email Label -->
 
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="0.43"
+            android:text="Sign up with Google"
+            android:textColor="#000000" />
+
         <EditText
             android:id="@+id/editText_name"
-            android:layout_width="240dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:background="#ffffff"
             android:ems="10"
             android:hint="Name"
             android:inputType="textPersonName"
@@ -46,8 +58,10 @@
 
         <Spinner
             android:id="@+id/accounts_tester_account_types_spinner_reg"
-            android:layout_width="240dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:background="#ffffff"
             android:padding="10dp" />
 
         <!-- Password Label -->
@@ -60,8 +74,9 @@
 
         <EditText
             android:id="@+id/editText_number"
-            android:layout_width="240dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
+            android:background="#FFFFFF"
             android:ems="10"
             android:hint="Phone number"
             android:inputType="phone"
@@ -74,11 +89,12 @@
 
         <Button
             android:id="@+id/btnRegister"
-            android:layout_width="240dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:text="Register"
-            android:textColor="@android:color/primary_text_light" />
+            android:background="#f04f32"
+            android:text="REGISTER"
+            android:textColor="#FFFFFF" />
 
         <!-- Link to Login Screen -->
 
@@ -95,7 +111,7 @@
             android:id="@+id/btnLinkToLoginScreen"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@null"
+            android:background="#d1d2d4"
             android:text="Already registred. Log me in!"
             android:textColor="#000000"
             android:textColorLink="#000000"
