@@ -41,6 +41,9 @@ public class ImageAdapter extends BaseAdapter {
             String fileStump = homeDir.toString();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
     		String email = prefs.getString("app_email", null);
+    		String userName = email.replace("@", "");
+    		userName = userName.replace(".", "");
+    		
             File file = new File(fileStump + File.separator + "group_logos" + File.separator + email);
             if (!file.exists()) {
             	file.mkdirs();
