@@ -49,11 +49,12 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("tag", "add_more_members"));
         params.add(new BasicNameValuePair("email", email));
         params.add(new BasicNameValuePair("token", token));
+        params.add(new BasicNameValuePair("group_id", "" + groupId));
         for (int i = 0; i < phoneNumbers.length; i++)
         	params.add(new BasicNameValuePair("numbers["+i+"]", phoneNumbers[i]));
+        
         JSONObject json = jsonParser.getJSONFromUrl(inviteMembersURL, params);
         // return json
-     // Log.e("JSON", json.toString());
         return json;
     }
     

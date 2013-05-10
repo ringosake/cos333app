@@ -290,8 +290,6 @@ public class NewGroupActivity extends Activity {
 			show("Malformed phone number entered");
 			return;
 		}
-		Log.d("inviting members", invitees[0]);
-		Log.d("inviting members", invitees[1]);
 		
 		if (groupName.getText().toString() == "") {
 			show("Group name cannot be blank.");
