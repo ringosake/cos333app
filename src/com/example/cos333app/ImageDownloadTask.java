@@ -77,6 +77,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
         	fileStump.mkdirs();
     	File file = new File(fileStump.toString() + this.groupID + ".jpg");
     	Log.d("filename", file.toString());
+    	Log.d("file_separator", File.separator);
         //Log.d("filez", Environment.getExternalStorageDirectory().toString());
     	if (!file.exists()) {
     		try {
@@ -104,7 +105,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
     	} catch (FileNotFoundException e) {
     		e.printStackTrace();
     	}*/
-    	Log.d("make file", "Got past the attempt at making a new file");
+    	//Log.d("make file", "Got past the attempt at making a new file");
     	/*
     	try {
     		fos.write(bytes.toByteArray());
@@ -113,7 +114,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
     	} catch (IOException e) {
     		e.printStackTrace();
     	} */
-    	Log.d("write file", "Got past the attempt to write the data into the new file");
+    	//Log.d("write file", "Got past the attempt to write the data into the new file");
 
 	    return;
     }
