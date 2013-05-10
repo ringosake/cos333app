@@ -16,22 +16,30 @@
 
 package com.example.cos333app;
 
+//import com.example.cos333app.NewGroupActivity.DownloadImageTask;
 import com.google.android.gms.auth.GoogleAuthUtil;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.webkit.URLUtil;
 import android.widget.EditText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
+import java.util.Calendar;
 
 import library.DatabaseHandler;
 import library.UserFunctions;
@@ -130,7 +138,21 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
 	  		    	final Editor edit = prefs.edit();
 	  		    	edit.putString("app_email", json_user.getString(KEY_EMAIL));
 	  		    	edit.putString("app_token", token);
+	  		    	edit.putString("app_uid", json.getString("user_id"));
+	  		    	
+	  		    	// get update on user's membership info from server and store in shared prefs.
+	  		    	// update image files if needed.
+	  		    	String userEmail = json_user.getString(KEY_EMAIL);
+	  		    	String userKey = userEmail + "_memberships";
+	  		    	String newInfo = this.updateMembership(userEmail, token, userKey, prefs);
+	  		    	
+	  		    	// replace old memberships info with new
+	  		    	if (!newInfo.equals("ERROR")) {
+	  		    		edit.putString(userKey, newInfo);
+	  		    	}
+	  		    	// store
 	  		    	edit.commit();
+	  		    	Log.d("newInfo", newInfo);
 	  				
   					// Launch Dashboard Screen
 	              	Intent dashboard = new Intent(mActivity.getApplicationContext(), MainActivity.class);
@@ -172,6 +194,116 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
         return new String(bos.toByteArray(), "UTF-8");
     }
 
+    /**
+     * Returns a String which describes the JSONObject detailing the current user's memberships, and updates their group's
+     * images.
+     * @param userEmail
+     * @param token
+     * @param userKey
+     * @param prefs
+     * @return Returns a String which describes the JSONObject detailing the current user's memberships
+     */
+    private String updateMembership (String userEmail, String token, String userKey, SharedPreferences prefs) {
+    	// talk to server
+    	UserFunctions uf = new UserFunctions();
+	    JSONObject json2 = uf.getMemberships(mEmail, token);
+	    //return "ERROR";	
+	    
+	    try {
+	    	Log.d("raw", json2.toString());
+	    	int jsonLength = json2.getInt("num_groups"); // check field
+	    	// JSONArray json_memberships = json2.getJSONArray("dets"); //TODO: obj or array?
+	    	// dets has been deleted. it's all jsonobjects now. each of the user's groups is
+	    	// represented by a jsonobject named by a number between 4 and 4 + jsonLength. yep
+	    	
+	    	boolean haveChanges = false;
+	    	
+	    	// check if this data has never been stored before. if so, update all 
+	    	if (!prefs.contains(userKey)) {
+	    		// Starts at 4 and goes to 4 + jsonLength due to back end
+	    		for (int i = 4; i < 4 + jsonLength; i++) {
+	    			JSONObject curr = json2.getJSONObject(Integer.toString(i)); //TODO: (Integer.toString(i));
+	    			String groupID = curr.getString("group_id");
+	    			String picURL = curr.getString("picture_url");
+	    			updateGroupImage(picURL, mEmail, groupID);
+	    		}
+	    		return json2.toString();
+	    	}
+	    	
+	    	// compare and update as needed
+	    	// Starts at 4 and goes to 4 + jsonLength due to back end
+	    	for (int i = 4; i < 4 + jsonLength; i++) {
+	    		// get current JSONObject
+	    		JSONObject curr = json2.getJSONObject(Integer.toString(i)); //TODO: see above and check object vs array
+	    		// check role. if 0, continue (because they are invitees who haven't accepted)
+	    		if (curr.getInt("role") == 0)
+	    			continue;
+	    		// check for image change. if so, update. if not, continue.
+	    		if (prefs.contains(userKey)) {
+	    			String oldData = prefs.getString(userKey, "");
+	    			JSONObject oldJSON = new JSONObject(oldData);
+	    			if (i > oldJSON.length()) {
+	    				String groupID = curr.getString("group_id");
+	    				String picURL = curr.getString("picture_url");
+	    				updateGroupImage(picURL, mEmail, groupID); // must indicate: group index? or group id + url?
+	    				haveChanges = true; // will need to update timestamps on all files to adjust
+	    			} else {
+	    				JSONObject oldCurr = oldJSON.getJSONObject(Integer.toString(i));
+	    				if (curr.getString("picture_url").equals(oldCurr.getString("picture_url"))) // check if group ids match?
+	    					continue;
+	    				String groupID = curr.getString("group_id");
+	    				String picURL = curr.getString("picture_url");
+	    				updateGroupImage(picURL, mEmail, groupID);
+	    				haveChanges = true;
+	    			}
+	    		}
+	    		
+	    	}
+	   	
+	    	// if any photos have been replaced, the pictures will be out of order.
+	    	if (haveChanges) {
+	    		reorderImages(userEmail, json2, prefs);
+	    	}
+	    
+	    	return json2.toString();
+	    } catch (JSONException e) {
+	    	e.printStackTrace();
+	    	return "ERROR";
+	    }
+    }
+    
+    private void updateGroupImage(String picture_url, String email, String groupID) {
+    	// get pic from URL
+    	ImageDownloadTask task = new ImageDownloadTask();
+    	Bitmap pic = task.doInBackground(picture_url, email, groupID);
+    	// save it in appropriate filename.
+    	task.onPostExecute(pic);
+    	//TODO: will this overwrite as needed?
+    }
+    
+    private void reorderImages(String userEmail, JSONObject json2, SharedPreferences prefs) {
+    	// cycle through this user's group image files in order determined by group join date
+    	// update the timestamps of each image to match this ordering
+    	File fileStump = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
+	 			+ File.separator + "group_logos" + File.separator + prefs.getString("app_email", null) + File.separator); // + groupID + ".jpg");
+    	
+    	try {
+    		// array starts at 4 due to back end
+    		for (int i = 4; i < 4 + json2.length(); i++) {
+    			// get current
+    			JSONObject curr = json2.getJSONObject(Integer.toString(i));
+    			String currGroup = curr.getString("group_id");
+    			File currFile = new File(fileStump.toString() + currGroup +".jpg"); //TODO: this assumes JPG
+    			if (currFile.exists()) {
+    				Calendar now = Calendar.getInstance();
+    				currFile.setLastModified(now.getTimeInMillis());
+    			}
+    		}
+    	} catch (JSONException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
     /**
      * Parses the response and returns the first name of the user.
      * @throws JSONException if the response is not JSON or if first name does not exist in response

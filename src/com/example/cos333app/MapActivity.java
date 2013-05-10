@@ -60,7 +60,7 @@ public class MapActivity extends FragmentActivity {
     
     // user, group identification
 	private String email, token; // to identify user
-    private int uid = 101; // !!!!!! change to get from shared prefs
+    private int uid;
     private int groupid = 1;
     
     private UserFunctions userFunctions;
@@ -116,6 +116,7 @@ public class MapActivity extends FragmentActivity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		email = prefs.getString("app_email", null);
 		token = prefs.getString("app_token", null);
+		uid = Integer.parseInt(prefs.getString("app_uid", null));
 		userFunctions = new UserFunctions();
 		
 		handler = new Handler();
@@ -195,6 +196,7 @@ public class MapActivity extends FragmentActivity {
 					foundvaliduser = true;
 					Polyline pline = mMap.addPolyline(trails.get(i));
 					pline.setColor(trailhues.get(i));
+					pline.setWidth(5);
 					traillines.add(pline);
 				}
 			}
@@ -219,6 +221,7 @@ public class MapActivity extends FragmentActivity {
 					foundvaliduser = true;
 					Polyline pline = mMap.addPolyline(trails.get(i));
 					pline.setColor(trailhues.get(i));
+					pline.setWidth(5);
 					traillines.add(pline);
 				}
 			}
