@@ -138,6 +138,7 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
 	  		    	final Editor edit = prefs.edit();
 	  		    	edit.putString("app_email", json_user.getString(KEY_EMAIL));
 	  		    	edit.putString("app_token", token);
+	  		    	edit.putString("app_uid", json.getString("user_id"));
 	  		    	
 	  		    	// get update on user's membership info from server and store in shared prefs.
 	  		    	// update image files if needed.

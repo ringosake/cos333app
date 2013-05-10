@@ -7,6 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.io.OutputStream;
 import java.net.URL;
 
@@ -33,16 +37,23 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.DialogFragment;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.URLUtil;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 public class NewGroupActivity extends Activity {
 
@@ -59,45 +70,79 @@ public class NewGroupActivity extends Activity {
 	ProgressBar progressbar;
 	ImageView imgLogo;
 	private ImageView image;
+	TextView errorMsg;
+	private Thread thread; 
 	private String groupID; //= "12"; //TODO: get the real one somehow
 	
 	// for contact autocomplete
 	MultiAutoCompleteTextView contactView;
-	public ArrayList<String> c_Name = new ArrayList<String>();
-	public ArrayList<ArrayList<String>> c_Number = new ArrayList<ArrayList<String>>();
-	String[] name_Val=null;
+	Map<String, String>[] people=null;
+	public ArrayList<ContactMap> mPeopleList = new ArrayList<ContactMap>();
+	private ArrayList<String> mNames = new ArrayList<String>();
+	private SimpleAdapter mAdapter;
 	
-	public void readContacts(){
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-               null, null, null, null);
-        
-        if (cur.getCount() > 0) {
-           while (cur.moveToNext()) {
-               String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-               String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-               if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-            	   c_Name.add(name);
-            	   ArrayList<String> nums = new ArrayList<String>();
-                   // get the phone number
-                   Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
-                                          ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
-                                          new String[]{id}, null);
-                   while (pCur.moveToNext()) {
-                         String phone = pCur.getString(
-                                pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                         nums.add(phone);
-                   }
-                   c_Number.add(nums);
-                   pCur.close();
-               }
-           }
-      }
-   }
+	class ContactMap extends HashMap<String, String> { 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public String toString() { 
+			return this.get("Name") + " <" + this.get("Phone") + ">"; 
+		} 
+	}
+	
+	public void readContacts() {
+	    ContentResolver cr = getContentResolver();
+	    Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+	           null, null, null, null);
+	    
+	    if (cur.getCount() > 0) {
+	       while (cur.moveToNext()) {
+	           String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+	           String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+	           if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+	               // get the phone number
+	               Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
+	                                      ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+	                                      new String[]{id}, null);
+	               while (pCur.moveToNext()) {
+	                     String phone = pCur.getString(
+	                            pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+	                     String numberType = pCur.getString(pCur.getColumnIndex(
+	                    		 ContactsContract.CommonDataKinds.Phone.TYPE));
+	                     
+	                     ContactMap NamePhoneType = new ContactMap();
+	
+	                     NamePhoneType.put("Name", name);
+	                     NamePhoneType.put("Phone", phone);
+	
+	                     if(numberType.equals("0"))
+	                    	 NamePhoneType.put("Type", "Work");
+	                     else if(numberType.equals("1"))
+	                    	 NamePhoneType.put("Type", "Home");
+	                     else if(numberType.equals("2"))
+	                    	 NamePhoneType.put("Type",  "Mobile");
+	                     else
+	                    	 NamePhoneType.put("Type", "Other");
+	
+	                     //Then add this map to the list.
+	                     mPeopleList.add(NamePhoneType);
+	                     mNames.add(name.toLowerCase());
+	               }
+	               pCur.close();
+	           }
+	       }
+	    }
+	    cur.close();
+	    //startManagingCursor(cur);
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		this.task = new DownloadImageTask();
 	    // Get the layout inflater
 		setContentView(R.layout.dialog_makegroup);
@@ -105,6 +150,7 @@ public class NewGroupActivity extends Activity {
 		this.btnCancelGroup = (Button) findViewById(R.id.btnCancelGroup);	
 		this.groupName = (EditText) findViewById(R.id.groupName);
 		this.picURL = (EditText) findViewById(R.id.picURL);
+		errorMsg= (TextView) findViewById(R.id.group_error); 
 		// get user
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 		this.email = prefs.getString("app_email", null);
@@ -116,14 +162,14 @@ public class NewGroupActivity extends Activity {
         
         readContacts();
         
-        name_Val = (String[]) c_Name.toArray(new String[c_Name.size()]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, name_Val);
+        mAdapter = new SimpleAdapter(this, mPeopleList, R.layout.custautocomplete ,new String[] { "Name", "Phone" , "Type" }, new int[] { R.id.ccontName, R.id.ccontNo, R.id.ccontType });
         contactView.setThreshold(1);
-        contactView.setAdapter(adapter);
+        contactView.setAdapter(mAdapter);
         
 		this.uf = new UserFunctions();
 		this.image = (ImageView) findViewById(R.id.imageView1);
 		
+		// buttons
 		btnConfirmGroup.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,6 +185,95 @@ public class NewGroupActivity extends Activity {
 		});
 	}
 	
+	private String[] getInvitees() {
+		ArrayList<String> numbers = new ArrayList<String>();
+		String[] invitees = contactView.getText().toString().split(",\\s*");
+		boolean[] isSelected = new boolean[mPeopleList.size()];
+		for (String invitee : invitees) {
+			// get that contact's number(s)
+			int start = invitee.lastIndexOf("<")+1;
+			int end = invitee.lastIndexOf(">");
+			String inviteeMod;
+			if (start > 0 && end == invitee.length()-1) {
+				// name <asdkjklaksjkdl>
+				inviteeMod = invitee.substring(start, end);
+				inviteeMod = PhoneNumberUtils.stripSeparators(invitee);
+				if (inviteeMod.charAt(0) == '+') 
+					inviteeMod = inviteeMod.substring(1);
+				if (PhoneNumberUtils.isWellFormedSmsAddress(invitee)) {
+					numbers.add(inviteeMod);
+				} else { 
+					int index = mNames.indexOf(invitee.toLowerCase());
+					if (index >= 0) {
+						inviteeMod = PhoneNumberUtils.stripSeparators(mPeopleList.get(index).get("Phone"));
+						if (inviteeMod.charAt(0) == '+') 
+							inviteeMod = inviteeMod.substring(1);
+						numbers.add(inviteeMod);
+					} else
+						return null;
+				}
+			} else {
+				int index = mNames.indexOf(invitee.toLowerCase());
+				if (index >= 0) {
+					inviteeMod = PhoneNumberUtils.stripSeparators(mPeopleList.get(index).get("Phone"));
+					if (inviteeMod.charAt(0) == '+') 
+						inviteeMod = inviteeMod.substring(1);
+					numbers.add(inviteeMod);
+				} else {
+					String inputAsPhone = PhoneNumberUtils.convertKeypadLettersToDigits(invitee);
+					inputAsPhone = PhoneNumberUtils.stripSeparators(inputAsPhone); 
+					if (inputAsPhone.charAt(0) == '+') 
+						inputAsPhone = inputAsPhone.substring(1);
+					if (PhoneNumberUtils.isWellFormedSmsAddress(inputAsPhone))
+						numbers.add(inputAsPhone);
+					else 
+						return null;
+				}
+			}
+		}
+		return numbers.toArray(new String[numbers.size()]);
+	}
+	
+	public void inviteMembers(int groupId, String[] invitees) {
+		// post it all
+		JSONObject grpJson = uf.inviteMembers(email, token, groupId, invitees);
+		try {
+			Log.d("toString", grpJson.toString());
+			String ourStatus = "";
+			if (grpJson.has(STATUS)) {
+				ourStatus = grpJson.getString(STATUS);
+			}
+			//Log.d("JSON status", ourStatus);
+			
+			if (!ourStatus.equals(ERROR)) {
+				return;
+			} else {
+				this.show("Failure to invite members.");
+				thread=  new Thread(){
+			        @Override
+			        public void run(){
+			            try {
+			                synchronized(this){
+			                    wait(3000);
+			                }
+			            }
+			            catch(InterruptedException ex){                    
+			            }
+
+			            // TODO              
+			        }
+			    };
+
+			    thread.start();
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			// print message?
+		}
+	
+	}
+	
 	public void confirmGroup() {
  	    // pull the strings from the edittexts. send groupname to server. get picture using url.
 		
@@ -149,8 +284,24 @@ public class NewGroupActivity extends Activity {
 			startActivity(intent);
 			finish();
 		}
+		// some invitees are not valid.
+		String[] invitees = getInvitees();
+		if (invitees == null) {
+			show("Malformed phone number entered");
+			return;
+		}
+		
+		if (groupName.getText().toString() == "") {
+			show("Group name cannot be blank.");
+			return;
+		} else if(!URLUtil.isValidUrl(picURL.getText().toString())) {
+			show("URL not valid.");
+			return;
+		}
+		
 		JSONObject grpJson = uf.createGroup(email, token, groupName.getText().toString(), picURL.getText().toString());
 		try {
+			show("1");
 			Log.d("toString", grpJson.toString());
 			String ourStatus = "";
 			if (grpJson.has(STATUS)) {
@@ -174,14 +325,16 @@ public class NewGroupActivity extends Activity {
 				groupName.setHint("Enter group name");
 				picURL.setText("");
 				picURL.setHint("Enter image URL");
- 	   
+				show("2");
+				inviteMembers(Integer.parseInt(grpJson.getString("group_id")), invitees);
+				
 				// then end the activity, returning to MainActivity
 				Intent intent = new Intent(this, MainActivity.class);
 				startActivity(intent);
 				finish();
 			} else {
 				// Inform user that group creation has failed?
-				// this.show("Group creation failed. Please try again.");
+				this.show("Group creation failed. Please try again.");
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -274,5 +427,17 @@ public class NewGroupActivity extends Activity {
 		    return;
 	    }
     } 
-	
+
+    /**
+     * This method is a hook for background threads and async tasks that need to update the UI.
+     * It does this by launching a runnable under the UI thread.
+     */
+    public void show(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+            	errorMsg.setText(message);
+            }
+        });
+    }
 }

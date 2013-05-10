@@ -68,7 +68,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
     	//bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
     	//--- create a new file on SD card ---
     	File file = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
-			 			+ File.separator + "group_logos" + File.separator + this.email + File.separator + groupID + ".jpg"); // name these dynamically
+			 			+ File.separator + "group_logos" + File.separator + this.email + File.separator + this.groupID + ".jpg"); // name these dynamically
     	Log.d("filez", Environment.getExternalStorageDirectory().toString());
     	if (!file.exists()) {
     		try {
