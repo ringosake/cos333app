@@ -87,19 +87,6 @@
 
     </RelativeLayout>
 
-    <!--
-    for debugging 
-	<TextView
-            android:id="@+id/tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="#D000"
-            android:layout_marginLeft="49dp"
-            android:layout_marginTop="116dp"
-            android:text="status" />
-    -->
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

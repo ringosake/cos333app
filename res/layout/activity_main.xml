@@ -53,7 +53,7 @@
             android:textSize="14sp" />
 
         <Button
-            android:id="@+id/Button01"
+            android:id="@+id/button_notif"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignBaseline="@+id/Button02"
