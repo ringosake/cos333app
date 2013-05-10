@@ -291,6 +291,8 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
     	// update the timestamps of each image to match this ordering
     	File fileStump = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
 	 			+ File.separator + "group_logos" + File.separator + prefs.getString("app_email", null) + File.separator); // + groupID + ".jpg");
+    	if (!fileStump.exists())
+    		fileStump.mkdirs();
     	
     	try {
     		int jsonLength = json2.getInt("num_groups");
