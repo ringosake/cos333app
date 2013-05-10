@@ -44,7 +44,7 @@ public class ImageAdapter extends BaseAdapter {
     		String userName = email.replace("@", "");
     		userName = userName.replace(".", "");
     		
-            File file = new File(fileStump + File.separator + "group_logos" + File.separator + email);
+            File file = new File(fileStump + File.separator + "group_logos" + File.separator + userName);
             if (!file.exists()) {
             	file.mkdirs();
             }
