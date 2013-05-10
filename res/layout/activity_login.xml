@@ -6,7 +6,7 @@
  
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <!--  View Title Label -->
@@ -60,8 +60,10 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dip"
             android:background="#f04f32"
+            android:minHeight="48dp"
             android:text="LOGIN"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
  
         <!--  Link to Registration Screen -->
 
@@ -83,7 +85,7 @@
             android:layout_marginTop="40dip"
             android:background="#d1d2d4"
             android:text="No account? Register now!"
-            android:textColor="?attr/buttonBarButtonStyle"
+            android:textColor="#000"
             android:textColorHint="#000000"
             android:textStyle="bold" />
 

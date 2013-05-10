@@ -10,38 +10,44 @@
         android:orientation="vertical"
         android:padding="10dip" >
         <!--  View Title Label -->
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dip"
-            android:text="CREATE GROUP"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="Create new group"
             android:textSize="25dip"
             android:textStyle="bold" />
 
         <!--  Group Name EditText -->
+
         <EditText
             android:id="@+id/groupName"
-            android:inputType="textPersonName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp"
-            android:hint="Enter group name" />
+            android:layout_marginTop="16dp"
+            android:hint="Enter group name"
+            android:inputType="textPersonName"
+            android:textSize="12sp" />
  
         <!--  Image URL EditText -->
+
         <EditText
             android:id="@+id/picURL"
-            android:inputType="textUri"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="sans-serif"
-            android:hint="Enter image URL"/>
+            android:hint="Enter image URL"
+            android:inputType="textUri"
+            android:textSize="12sp" />
         
         <!--  Contacts selector -->
 
@@ -49,27 +55,37 @@
  		    android:id="@+id/multiautocomp_contacts"
  		    android:layout_width="match_parent"
  		    android:layout_height="wrap_content"
- 		    android:layout_margin="8px"
+ 		    android:layout_margin="4dp"
  		    android:layout_weight="0.15"
  		    android:hint="Enter group members seperated by commas"
  		    android:textColor="#000000"
- 		    android:textSize="18sp" />
+ 		    android:textSize="12sp" />
  
         <!--  Error message -->
  
         <!--  Login Button -->
+
         <Button
             android:id="@+id/btnConfirmGroup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:text="Add Group" />
+            android:background="#f04f32"
+            android:minHeight="48dp"
+            android:text="Add Group"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
         <Button
             android:id="@+id/btnCancelGroup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:text="Cancel" />
+            android:layout_marginTop="10dp"
+            android:background="#404040"
+            android:minHeight="48dp"
+            android:text="Cancel"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
  
         <!--  Link to Registration Screen -->
 
@@ -80,12 +96,6 @@
             android:padding="10dip"
             android:textColor="#e30000"
             android:textStyle="bold" />
-        
-        <ImageView
-           android:id="@+id/imageView1"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:src="@drawable/ic_launcher" />
 
     </LinearLayout>
  
