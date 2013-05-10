@@ -200,6 +200,8 @@ public class NewGroupActivity extends Activity {
 				inviteeMod = PhoneNumberUtils.stripSeparators(invitee);
 				if (inviteeMod.charAt(0) == '+') 
 					inviteeMod = inviteeMod.substring(1);
+				if (inviteeMod.length() == 10)
+					inviteeMod = "1" + inviteeMod;
 				if (PhoneNumberUtils.isWellFormedSmsAddress(invitee)) {
 					numbers.add(inviteeMod);
 				} else { 
@@ -208,6 +210,8 @@ public class NewGroupActivity extends Activity {
 						inviteeMod = PhoneNumberUtils.stripSeparators(mPeopleList.get(index).get("Phone"));
 						if (inviteeMod.charAt(0) == '+') 
 							inviteeMod = inviteeMod.substring(1);
+						if (inviteeMod.length() == 10)
+							inviteeMod = "1" + inviteeMod;
 						numbers.add(inviteeMod);
 					} else
 						return null;
@@ -224,6 +228,8 @@ public class NewGroupActivity extends Activity {
 					inputAsPhone = PhoneNumberUtils.stripSeparators(inputAsPhone); 
 					if (inputAsPhone.charAt(0) == '+') 
 						inputAsPhone = inputAsPhone.substring(1);
+					if (inputAsPhone.length() == 10)
+						inputAsPhone = "1" + inputAsPhone;
 					if (PhoneNumberUtils.isWellFormedSmsAddress(inputAsPhone))
 						numbers.add(inputAsPhone);
 					else 
