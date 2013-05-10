@@ -32,9 +32,9 @@ public class UserFunctions {
     private static String createGroup_tag = "create_group";
     private static String requestMessage_tag = "request_message";
     private static String updateloc_tag = "update_location";
-    private static String retrivemyloc_tag = "retrieve_my_location";
     private static String retrievealllocs_tag = "retrieve_group_members_location";
     private static String getMemberships_tag = "get_my_groups_details";
+    private static String retrivenotif_tag = "retrieve_notifications";
     
     // constructor
     public UserFunctions(){
@@ -214,13 +214,13 @@ public class UserFunctions {
         return json;
     }
     /**
-     * function update location of user
+     * function retrieve all locations in group
      * @param email
      * @param token
      * @param groupid
      * */
     public JSONObject retrieveAllLocations(String email, String token, int groupid){
-    	if (email == null || token == null) Log.e("USERFUNC_RETRIEVE", "token NULL");
+    	if (email == null || token == null) Log.e("USERFUNC_RETRIEVE", "email/token NULL");
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", retrievealllocs_tag));
@@ -230,6 +230,25 @@ public class UserFunctions {
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         if (json == null) Log.e("USERFUNC", "retrieve locations: json null");
         //Log.d("USERFUNC_RETREIVE", json.toString());
+        return json;
+    }
+    
+    /**
+     * function retrieve all notifications for user
+     * @param email
+     * @param token
+     * @param groupid
+     * */
+    public JSONObject retrieveNotifications(String email, String token){
+    	if (email == null || token == null) Log.e("USERFUNC_RET_NOTIF", "email/token NULL");
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", retrivenotif_tag));
+        params.add(new BasicNameValuePair("email", email));
+        params.add(new BasicNameValuePair("token", token));
+        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+        if (json == null) Log.e("USERFUNC", "retrieve notifications: json null");
+        //Log.d("USERFUNC_RET_NOTIF", json.toString());
         return json;
     }
 }
