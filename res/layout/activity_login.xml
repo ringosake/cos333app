@@ -1,94 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#c5c5c5" >
- 
-    <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/background_grey" >
+    
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_grey" >
+
+    <!-- View Title Label -->
+
+    <TextView
+        android:id="@+id/TextView1"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="40dp"
+        android:layout_weight="0.43"
+        android:background="#ffffff"
+        android:gravity="bottom|center"
+        android:padding="0dp"
+        android:text="ubiquitus"
+        android:textColor="#c5c5c5"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <!-- Email Label -->
+    <!-- Email TextField -->
+
+    <Spinner
+        android:id="@+id/accounts_tester_account_types_spinner"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="#ffffff"
+        android:padding="10dp" />
+
+    <!-- Password Label -->
+    <!-- Password TextField -->
+
+
+    <!-- Error message -->
+
+
+    <!-- Login Button -->
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/accounts_tester_account_types_spinner"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/orangebutton"
+        android:height="48dp"
+        android:text="LOGIN"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
+
+    <!-- Link to Registration Screen -->
+
+    <TextView
+        android:id="@+id/login_error"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btnLogin"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:padding="10dip"
+        android:textColor="@color/button_orange_up"
+        android:textStyle="bold" />
 
-        <!--  View Title Label -->
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView1"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="0.43"
+        android:text="Login with Google"
+        android:textColor="#000000"
+        android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="100dp"
-            android:layout_marginBottom="40dp"
-            android:layout_weight="0.43"
-            android:background="#ffffff"
-            android:gravity="bottom|center"
-            android:padding="0dp"
-            android:text="ubiquitus"
-            android:textColor="#c5c5c5"
-            android:textSize="48sp"
-            android:textStyle="bold"
-            android:typeface="serif" />
+    <Button
+        android:id="@+id/btnLinkToRegisterScreen"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/login_error"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/greybottombutton"
+        android:text="No account? Register now!"
+        android:textColor="#000"
+        android:textColorHint="#000000"
+        android:textStyle="bold" />
 
-        <!--  Email Label -->
-        <!--  Email TextField -->
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="0.43"
-            android:text="Login with Google"
-            android:textColor="#000000" />
-
-        <Spinner
-            android:id="@+id/accounts_tester_account_types_spinner"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="#ffffff"
-            android:padding="10dp" />
- 
-        <!--  Password Label -->
-        <!--  Password TextField -->
- 
-        <!--  Error message -->
- 
-        <!--  Login Button -->
-
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dip"
-            android:background="#f04f32"
-            android:minHeight="48dp"
-            android:text="LOGIN"
-            android:textColor="#ffffff"
-            android:textSize="16sp" />
- 
-        <!--  Link to Registration Screen -->
-
-        <TextView
-            android:id="@+id/login_error"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:padding="10dip"
-            android:textColor="#f04f32"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btnLinkToRegisterScreen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="40dip"
-            android:background="#d1d2d4"
-            android:text="No account? Register now!"
-            android:textColor="#000"
-            android:textColorHint="#000000"
-            android:textStyle="bold" />
-
-    </LinearLayout>
- 
+</RelativeLayout>
 </ScrollView>

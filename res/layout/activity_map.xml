@@ -34,6 +34,7 @@
             android:layout_alignBottom="@+id/multiAutoCompleteTextView1"
             android:layout_alignRight="@id/multiAutoCompleteTextView1"
             android:layout_alignTop="@+id/multiAutoCompleteTextView1"
+            android:layout_marginTop="5dp"
             android:text="Search"
             android:textColor="#fff" />
 
@@ -44,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_gravity="bottom"
-        android:background="#f04f32" >
+        android:background="@color/button_orange_up" >
 
         <Button
             android:id="@+id/button_login"
@@ -52,8 +53,9 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:background="@null"
+            android:layout_marginLeft="0dp"
+            android:layout_toLeftOf="@+id/button4"
+            android:background="@drawable/orangebutton"
             android:onClick="goHome"
             android:text="Home"
             android:textColor="#fff"
@@ -66,20 +68,21 @@
             android:layout_alignBaseline="@+id/button_login"
             android:layout_alignBottom="@+id/button_login"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:background="@null"
+            android:layout_marginRight="0dp"
+            android:layout_toRightOf="@+id/button4"
+            android:background="@drawable/orangebutton"
             android:text="Options"
             android:textColor="#fff"
             android:textSize="14sp" />
 
         <Button
             android:id="@+id/button4"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="match_parent"
             android:layout_alignBaseline="@+id/button_register"
             android:layout_alignBottom="@+id/button_register"
             android:layout_centerHorizontal="true"
-            android:background="@null"
+            android:background="@drawable/orangebutton"
             android:onClick="goToMessages"
             android:text="Messages"
             android:textColor="#fff"
@@ -88,7 +91,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="60dp"
@@ -96,23 +99,25 @@
 
         <Button
             android:id="@+id/buttontrails"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="20dp"
             android:layout_marginLeft="10dp"
             android:background="#fff"
             android:onClick="viewTrails"
+            android:padding="5dp"
             android:text="View Trails"
             android:textColor="#000"
             android:textSize="10sp" />
 
         <Button
             android:id="@+id/buttonchangebounds"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:background="#fff"
             android:onClick="viewAll"
+            android:padding="5dp"
             android:text="View All"
             android:textColor="#000"
             android:textSize="10sp" />

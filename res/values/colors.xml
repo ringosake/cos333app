@@ -1,5 +1,11 @@
 <resources>
 
     <color name="black_overlay">#66000000</color>
-
+	<color name="button_orange_up">#f04f32</color>
+	<color name="button_orange_down">#f06a51</color>
+	<color name="button_grey_up">#404040</color>
+	<color name="button_grey_down">#5d5e5e</color>
+	<color name="button_greybottom_up">#d1d2d4</color>
+	<color name="button_greybottom_down">#d8d9da</color>
+	<color name="background_grey">#c5c5c5</color>
 </resources>
