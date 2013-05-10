@@ -34,7 +34,7 @@ public class UserFunctions {
     private static String updateloc_tag = "update_location";
     private static String retrievealllocs_tag = "retrieve_group_members_location";
     private static String getMemberships_tag = "get_my_groups_details";
-    private static String retrivenotif_tag = "get_match_invitations";
+    private static String retrivenotif_tag = "retrieve_notifications";
     private static String respondnotif_tag = "respond_to_invitation";
     
     // constructor
