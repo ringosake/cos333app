@@ -122,9 +122,8 @@ public class MapActivity extends FragmentActivity {
 		
 		// get extra to identify group
 		Intent intent = getIntent();
-		String gid = intent.getStringExtra("group_id");
-		Log.d("MAPACTIVITY", "came from group " + gid);
-		// groupid = Integer.parseInt(gid);
+		String gid = intent.getStringExtra("GROUP_ID");
+		groupid = Integer.parseInt(gid);
 		
 		handler = new Handler();
         markers = new LinkedList<Marker>();
@@ -167,14 +166,16 @@ public class MapActivity extends FragmentActivity {
         super.onResume();
         
         // get extra to identify group
-        /*Intent intent = getIntent();
+        Intent intent = getIntent();
      	String gid = intent.getStringExtra("group_id");
-     	int igid = Integer.parseInt(gid);
-        if (igid != groupid) {
-        	groupid = igid;
-        	cleanup();
-        }
-        */
+     	if (gid != null) {
+	     	int igid = Integer.parseInt(gid);
+	        if (igid != groupid) {
+	        	groupid = igid;
+	        	cleanup();
+	        }
+     	}
+        
         setUpMapIfNeeded();
         startRepeatingTask();
     }
