@@ -34,7 +34,8 @@ public class UserFunctions {
     private static String updateloc_tag = "update_location";
     private static String retrievealllocs_tag = "retrieve_group_members_location";
     private static String getMemberships_tag = "get_my_groups_details";
-    private static String retrivenotif_tag = "retrieve_notifications";
+    private static String retrivenotif_tag = "get_match_invitations";
+    private static String respondnotif_tag = "respond_to_invitation";
     
     // constructor
     public UserFunctions(){
@@ -248,7 +249,28 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("token", token));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         if (json == null) Log.e("USERFUNC", "retrieve notifications: json null");
-        //Log.d("USERFUNC_RET_NOTIF", json.toString());
+        Log.d("USERFUNC_RET_NOTIF", json.toString());
+        return json;
+    }
+    
+    /**
+     * function retrieve all notifications for user
+     * @param email
+     * @param token
+     * @param groupid
+     * */
+    public JSONObject respondNotification(String email, String token, int matchid, int accept){
+    	if (email == null || token == null) Log.e("USERFUNC_RESP_NOTIF", "email/token NULL");
+        // Building Parameters
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", respondnotif_tag));
+        params.add(new BasicNameValuePair("email", email));
+        params.add(new BasicNameValuePair("token", token));
+        params.add(new BasicNameValuePair("match_invitation_id", String.valueOf(matchid)));
+        params.add(new BasicNameValuePair("accept", String.valueOf(accept)));
+        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+        if (json == null) Log.e("USERFUNC", "respond invite notification: json null");
+        Log.d("USERFUNC_RESP_NOTIF", json.toString());
         return json;
     }
 }

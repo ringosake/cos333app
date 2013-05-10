@@ -52,7 +52,7 @@ public class MapActivity extends FragmentActivity {
     private LinkedList<Integer> trailhues;
     private SparseIntArray userToIndex;
     private static int updatetime = 5000; // 5 seconds
-    private static double mindist = 5; // don't update unless 5m difference
+    private static double mindist = 2; // don't update unless 2m difference
     private boolean SHOW_TRAILS;
     private float nextcolour = 0; // for colouring trails
     private float [] results; // scratch work
@@ -183,20 +183,24 @@ public class MapActivity extends FragmentActivity {
         setUpMapIfNeeded();
         startRepeatingTask();
     }
-	@Override
+	/*@Override
     protected void onPause() {
+		Log.d("MAPACTIVITY", "PAUSE");
         super.onPause();
         stopRepeatingTask();
-    }
+    }*/
 	@Override
     protected void onStop() {
+		Log.d("MAPACTIVITY", "STOP");
         super.onStop();
         stopRepeatingTask();
     }
 	@Override
     protected void onDestroy() {
+		Log.d("MAPACTIVITY", "DESTROY");
         super.onDestroy();
         stopRepeatingTask();
+        gps.stopUsingGPS();
     }
 	
 	@Override

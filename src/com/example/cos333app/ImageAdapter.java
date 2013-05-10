@@ -143,8 +143,8 @@ public class ImageAdapter extends BaseAdapter {
         TextView textView = (TextView)view.findViewById(R.id.textpart1);
         // textView.setText(String.valueOf(position));
         textView.setText(groupName);
-        textView = (TextView)view.findViewById(R.id.textpart2);
-        textView.setText(String.valueOf(position));
+        //textView = (TextView)view.findViewById(R.id.textpart2);
+        //textView.setText(String.valueOf(position));
         // set onClick for view?
         
         return view;
