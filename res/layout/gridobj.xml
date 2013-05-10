@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- understand the units of measurement and select right one
+    Line 12 used to say: android:onClick="openMap">
  -->
  
 <RelativeLayout
@@ -8,8 +9,7 @@
     android:layout_width="150dip"
 	android:layout_height="150dip"
     android:layout_margin="0dp"
-    android:background="#FFF" 
-    android:onClick="openMap">
+    android:background="#FFF" >
 
 	<ImageView
 	    android:id="@+id/imagepart"

@@ -222,17 +222,22 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
 	    	if (!prefs.contains(userKey)) {
 	    		// Starts at 4 and goes to 4 + jsonLength due to back end
 	    		for (int i = 4; i < 4 + jsonLength; i++) {
+	    			if (!json2.has(Integer.toString(i)))
+	    				continue;
 	    			JSONObject curr = json2.getJSONObject(Integer.toString(i)); //TODO: (Integer.toString(i));
 	    			String groupID = curr.getString("group_id");
 	    			String picURL = curr.getString("picture_url");
 	    			updateGroupImage(picURL, mEmail, groupID);
 	    		}
+	    		reorderImages(mEmail, json2, prefs);
 	    		return json2.toString();
 	    	}
 	    	
 	    	// compare and update as needed
 	    	// Starts at 4 and goes to 4 + jsonLength due to back end
 	    	for (int i = 4; i < 4 + jsonLength; i++) {
+	    		if (!json2.has(Integer.toString(i)))
+    				continue;
 	    		// get current JSONObject
 	    		JSONObject curr = json2.getJSONObject(Integer.toString(i)); //TODO: see above and check object vs array
 	    		// check role. if 0, continue (because they are invitees who haven't accepted)
@@ -288,15 +293,20 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
 	 			+ File.separator + "group_logos" + File.separator + prefs.getString("app_email", null) + File.separator); // + groupID + ".jpg");
     	
     	try {
-    		// array starts at 4 due to back end
-    		for (int i = 4; i < 4 + json2.length(); i++) {
+    		int jsonLength = json2.getInt("num_groups");
+    		// array starts at 4 due to back end. Stops 3 short because final field is length. lol
+    		for (int i = 4; i < 4 + jsonLength; i++) {
     			// get current
+    			if (!json2.has(Integer.toString(i)))
+    				continue;
     			JSONObject curr = json2.getJSONObject(Integer.toString(i));
     			String currGroup = curr.getString("group_id");
     			File currFile = new File(fileStump.toString() + currGroup +".jpg"); //TODO: this assumes JPG
     			if (currFile.exists()) {
-    				Calendar now = Calendar.getInstance();
-    				currFile.setLastModified(now.getTimeInMillis());
+    				//Calendar now = Calendar.getInstance();
+    				Log.d("updateAttempt", "updateAttempt");
+    				//currFile.setLastModified(now.getTimeInMillis() + i);
+    				currFile.setLastModified(curr.getLong("join_date"));
     			}
     		}
     	} catch (JSONException e) {
