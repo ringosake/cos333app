@@ -34,8 +34,8 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
         	this.groupID = urls[2];
         //}
         Bitmap mIcon11 = null;
-        urldisplay = urldisplay.replace(" ", "");
-        if (!URLUtil.isValidUrl(urldisplay)) {
+        // urldisplay = urldisplay.replace(" ", "");
+        if (!URLUtil.isValidUrl(urldisplay) || urldisplay.contains("\\s")) {
         	urldisplay = backupLink;
         	try {
                 InputStream in = new java.net.URL(urldisplay).openStream();
@@ -77,7 +77,7 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
         	fileStump.mkdirs();
     	File file = new File(fileStump.toString() + File.separator + this.groupID + ".jpg");
     	Log.d("filename", file.toString());
-    	Log.d("file_separator", File.separator);
+    	//Log.d("file_separator", File.separator);
         //Log.d("filez", Environment.getExternalStorageDirectory().toString());
     	if (!file.exists()) {
     		try {
