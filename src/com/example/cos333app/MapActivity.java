@@ -77,6 +77,7 @@ public class MapActivity extends FragmentActivity {
     private static float COLOUR_INCREMENT = 30; // for colouring trails
     private static float HSV_SATURATION = 1;
     private static float HSV_VALUE = 1;
+    private static int MAX_SIZE = 6000;
     
     Runnable statusChecker = new Runnable() {
     	@Override
@@ -95,7 +96,7 @@ public class MapActivity extends FragmentActivity {
     	// query location
     	if(gps.canGetLocation()){
             cur_location = gps.getLocation();
-            updateMyLocation();
+            //updateMyLocation();
         }
     	else {
     		Log.e("MAPACTIVITY", "couldn't get gps location");
@@ -141,6 +142,22 @@ public class MapActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        startRepeatingTask();
+    }
+	@Override
+    protected void onPause() {
+        super.onPause();
+        stopRepeatingTask();
+    }
+	@Override
+    protected void onStop() {
+        super.onStop();
+        stopRepeatingTask();
+    }
+	@Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopRepeatingTask();
     }
 	
 	@Override
@@ -360,15 +377,17 @@ public class MapActivity extends FragmentActivity {
         				index = userToIndex.get(userid, -1);
         				if (index < 0)  { // new user
                             index = validusers.size();
-                            userToIndex.put(userid, index);
-            				markers.add(m);
-            				locations.add(new LatLng(lat, lng));
-            				validusers.add(true);
-                            PolylineOptions polyoptions = new PolylineOptions().add(new LatLng(lat, lng));
-                            trails.add(polyoptions);
-                            hsvcolour[0] = nextcolour;
-                            trailhues.add(Color.HSVToColor(hsvcolour));
-                            nextcolour = (nextcolour + COLOUR_INCREMENT) % 360;
+                            if (index < MAX_SIZE) {
+	                            userToIndex.put(userid, index);
+	            				markers.add(m);
+	            				locations.add(new LatLng(lat, lng));
+	            				validusers.add(true);
+	                            PolylineOptions polyoptions = new PolylineOptions().add(new LatLng(lat, lng));
+	                            trails.add(polyoptions);
+	                            hsvcolour[0] = nextcolour;
+	                            trailhues.add(Color.HSVToColor(hsvcolour));
+	                            nextcolour = (nextcolour + COLOUR_INCREMENT) % 360;
+                            }
                         }
                         else {
                         	Location.distanceBetween(locations.get(index).latitude, locations.get(index).longitude,
