@@ -2,93 +2,121 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
-     <fragment
+
+    <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="com.google.android.gms.maps.SupportMapFragment" />
 
-	<RelativeLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="47dp" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp" >
 
-		<MultiAutoCompleteTextView
-		    android:id="@+id/multiAutoCompleteTextView1"
-		    style="@style/AppBaseTheme"
-		    android:layout_width="240dip"
-		    android:layout_height="100dip"
-		    android:layout_centerInParent="true"
-		    android:layout_marginTop="10dp"
-		    android:background="#90ffffff"
-		    android:completionThreshold="4"
-		    android:dropDownHeight="12dip"
-		    android:ems="10"
-		    android:hint="@string/search_hint"
-		    android:padding="5dp" />
+        <MultiAutoCompleteTextView
+            android:id="@+id/multiAutoCompleteTextView1"
+            style="@style/AppBaseTheme"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="10dp"
+            android:background="#fff"
+            android:completionThreshold="4"
+            android:dropDownHeight="12dip"
+            android:ems="10"
+            android:hint="@string/search_hint"
+            android:padding="5dp" />
 
-		<Button
-		    android:id="@+id/button3"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_alignBottom="@+id/multiAutoCompleteTextView1"
-		    android:layout_alignRight="@id/multiAutoCompleteTextView1"
-		    android:layout_alignTop="@+id/multiAutoCompleteTextView1"
-		    android:text="Search" />
-
-	</RelativeLayout>
-
-	<LinearLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="52dp"
-	    android:layout_gravity="bottom" >
-
-		<Button
-		    android:id="@+id/button_login"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_marginLeft="10dp"
-		    android:text="Home" 
-		    android:onClick="goHome"/>
-
-		<Button
-		    android:id="@+id/button_register"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="Options" />
-
-		<Button
-		    android:id="@+id/button4"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="Messages"
-		    android:onClick="goToMessages" />
-
-		<Button
-		    android:id="@+id/buttonchangebounds"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="View All"
-		    android:onClick="viewAll" />
-
-	</LinearLayout>
-	
-	<!-- for debugging 
-	<TextView
-            android:id="@+id/tv"
+        <Button
+            android:id="@+id/button3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="#D000"
-            android:layout_marginLeft="49dp"
-            android:layout_marginTop="116dp"
-            android:text="status" /> -->
+            android:layout_alignBottom="@+id/multiAutoCompleteTextView1"
+            android:layout_alignRight="@id/multiAutoCompleteTextView1"
+            android:layout_alignTop="@+id/multiAutoCompleteTextView1"
+            android:text="Search"
+            android:textColor="#fff" />
 
-	<Button
-	    android:id="@+id/buttontrails"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:text="View Trails" 
-	    android:onClick="viewTrails" />
-	
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_gravity="bottom"
+        android:background="#f04f32" >
+
+        <Button
+            android:id="@+id/button_login"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:background="@null"
+            android:onClick="goHome"
+            android:text="Home"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/button_register"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignBaseline="@+id/button_login"
+            android:layout_alignBottom="@+id/button_login"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:background="@null"
+            android:text="Options"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignBaseline="@+id/button_register"
+            android:layout_alignBottom="@+id/button_register"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
+            android:onClick="goToMessages"
+            android:text="Messages"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="60dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/buttontrails"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="#fff"
+            android:onClick="viewTrails"
+            android:text="View Trails"
+            android:textColor="#000"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/buttonchangebounds"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:background="#fff"
+            android:onClick="viewAll"
+            android:text="View All"
+            android:textColor="#000"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
 </FrameLayout>

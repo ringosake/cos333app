@@ -8,54 +8,63 @@
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/LinearLayout1"
+        android:layout_above="@+id/RelativeLayout2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="#eee"
+        android:background="#ffffff"
         android:gravity="center"
         android:horizontalSpacing="10dp"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
         android:verticalSpacing="10dp" />
 
-    <LinearLayout
-        android:id="@+id/LinearLayout1"
+    <RelativeLayout
+        android:id="@+id/RelativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="#111"
+        android:background="#f04f32"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/Button02"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="10dp"
-            android:background="#111"
-            android:text="Button"
-            android:textColor="#fff" />
-
-        <Button
-            android:id="@+id/Button01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:layout_margin="10dp"
-            android:background="#111"
-            android:text="Button"
-            android:textColor="#fff" />
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:background="#f04f32"
+            android:text="Options"
+            android:textColor="#fff"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/button_logout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="10dp"
-            android:background="#111"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="#f04f32"
+            android:gravity="center_vertical|center_horizontal"
             android:text="Logout"
-            android:textColor="#fff" />
-    </LinearLayout>
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/button_notif"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignBaseline="@+id/Button02"
+            android:layout_alignBottom="@+id/Button02"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="0dp"
+            android:background="#f04f32"
+            android:text="Notifications"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

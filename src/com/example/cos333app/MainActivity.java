@@ -22,6 +22,8 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	UserFunctions userFunctions;
 	Button btnLogout;
+	Button btnNotif;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,12 +45,25 @@ public class MainActivity extends Activity {
     	    });
     	    
     	    btnLogout = (Button) findViewById(R.id.button_logout);
+    	    btnNotif = (Button) findViewById(R.id.button_notif);
+
     	    
             btnLogout.setOnClickListener(new View.OnClickListener() {
  
                 public void onClick(View arg0) {
                     userFunctions.logoutUser(getApplicationContext());
                     Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+                    login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(login);
+                    // Closing dashboard screen
+                    finish();
+                }
+            });
+            
+            btnNotif.setOnClickListener(new View.OnClickListener() {
+            	 
+                public void onClick(View arg0) {
+                    Intent login = new Intent(getApplicationContext(), NotificationActivity.class);
                     login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(login);
                     // Closing dashboard screen
