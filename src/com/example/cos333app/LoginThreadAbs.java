@@ -229,7 +229,7 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
 	    			String picURL = curr.getString("picture_url");
 	    			updateGroupImage(picURL, mEmail, groupID);
 	    		}
-	    		reorderImages(mEmail, json2, prefs);
+	    		//reorderImages(mEmail, json2, prefs);
 	    		return json2.toString();
 	    	}
 	    	
@@ -267,7 +267,7 @@ public abstract class LoginThreadAbs extends AsyncTask<Void, Void, Void>{
 	   	
 	    	// if any photos have been replaced, the pictures will be out of order.
 	    	if (haveChanges) {
-	    		reorderImages(userEmail, json2, prefs);
+	    		//reorderImages(userEmail, json2, prefs);
 	    	}
 	    
 	    	return json2.toString();

@@ -76,7 +76,8 @@ public class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
     	if (!fileStump.exists())	
         	fileStump.mkdirs();
     	File file = new File(fileStump.toString() + this.groupID + ".jpg");
-        Log.d("filez", Environment.getExternalStorageDirectory().toString());
+    	Log.d("filename", file.toString());
+        //Log.d("filez", Environment.getExternalStorageDirectory().toString());
     	if (!file.exists()) {
     		try {
     			file.createNewFile();
