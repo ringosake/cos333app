@@ -75,7 +75,7 @@ public class GPSTracker extends Service implements LocationListener {
                         if (netloc != null) {
                             latitude = netloc.getLatitude();
                             longitude = netloc.getLongitude();
-                            //location = netloc;
+                            location = netloc;
                         }
                     }
                 }
@@ -92,7 +92,7 @@ public class GPSTracker extends Service implements LocationListener {
                             if (gpsloc != null) {
                                 latitude = gpsloc.getLatitude();
                                 longitude = gpsloc.getLongitude();
-                                //location = gpsloc;
+                                location = gpsloc;
                             }
                         }
                     //}
