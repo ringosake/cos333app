@@ -113,8 +113,9 @@ public class RegisterActivity extends Activity {
       // Save UI state changes to the savedInstanceState.
       // This bundle will be passed to onCreate if the process is
       // killed and restarted.
-      savedInstanceState.putBoolean("visited", visited);
+      savedInstanceState.putString("mNumber", mNumber);
       savedInstanceState.putString("code", mCode);
+      savedInstanceState.putBoolean("visited", visited);
       // etc.
     }
     
@@ -124,6 +125,7 @@ public class RegisterActivity extends Activity {
       // Restore UI state from the savedInstanceState.
       // This bundle has also been passed to onCreate.
       visited = savedInstanceState.getBoolean("visited");
+      mNumber = savedInstanceState.getString("mNumber");
       mCode = savedInstanceState.getString("code");
     }
     @Override
@@ -164,10 +166,10 @@ public class RegisterActivity extends Activity {
                 mName = name.getText().toString();
                 String numStrip = PhoneNumberUtils.extractNetworkPortion(phoneNumber.getText().toString());
                 if (PhoneNumberUtils.isWellFormedSmsAddress(numStrip)) {
+                	
+                	if (mNumber == null || mNumber.compareTo(numStrip) != 0)
+                		mCode = sendVerif(numStrip);
                 	mNumber = numStrip;
-                	if (!visited)
-                		mCode = sendVerif(mNumber);
-                	visited = true;
                 	
                 	// Set an EditText view to get user input 
                 	final EditText input = new EditText(RegisterActivity.this);

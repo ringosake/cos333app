@@ -30,8 +30,16 @@ import android.widget.TextView;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private File[] grpPics;
+    String userID;
+    String email;
+    String info;
 
     public ImageAdapter(Context c) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        userID = prefs.getString("app_uid", null);
+        email = prefs.getString("app_email", null);
+        info = prefs.getString(email + "_memberships", null);
+    	
         mContext = c;
         // all below this point is very sketchy
         String state = Environment.getExternalStorageState();
@@ -39,8 +47,6 @@ public class ImageAdapter extends BaseAdapter {
         {
             File homeDir = Environment.getExternalStorageDirectory();
             String fileStump = homeDir.toString();
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
-    		String email = prefs.getString("app_email", null);
     		String userName = email.replace("@", "");
     		userName = userName.replace(".", "");
     		
@@ -105,13 +111,17 @@ public class ImageAdapter extends BaseAdapter {
         View view;
         view = new View(mContext);
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String userID = prefs.getString("app_uid", null);
-        String email = prefs.getString("app_email", null);
-        String info = prefs.getString(email + "_memberships", null);
         String groupName = null;
         String groupID = null;
         
+        // user may be not registered. info might == null
+        // if (position==(mThumbIds.length - 1)) { // if we're at a position beyond all the images?
+        if (position == grpPics.length - 1) { //TODO: Check for off by 1 error
+            view=inflater.inflate(R.layout.gridobj_plus, parent, false);
+            return view;
+        }
+        
+        // user is already registered and maybe has groups
         try {
         	//Log.d("info", info);
         	//Log.d("pos", Integer.toString(position));
@@ -127,12 +137,7 @@ public class ImageAdapter extends BaseAdapter {
         userName = userName.replace(".", "");
         File file = new File(Environment.getExternalStorageDirectory() // change code above to refer to this dir
 	 			+ File.separator + "group_logos" + File.separator + userName + File.separator + groupID + ".jpg");
-        
-       // if (position==(mThumbIds.length - 1)) { // if we're at a position beyond all the images?
-        if (position == grpPics.length - 1) { //TODO: Check for off by 1 error
-            view=inflater.inflate(R.layout.gridobj_plus, parent, false);
-            return view;
-        }
+       
         view=inflater.inflate(R.layout.gridobj, parent, false);
         ImageView imageView = (ImageView)view.findViewById(R.id.imagepart);
         //imageView.setImageResource(mThumbIds[position]);
