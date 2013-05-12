@@ -270,7 +270,7 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("accept", String.valueOf(accept)));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         if (json == null) Log.e("USERFUNC", "respond invite notification: json null");
-        Log.d("USERFUNC_RESP_NOTIF", json.toString());
+        //Log.d("USERFUNC_RESP_NOTIF", json.toString());
         return json;
     }
 }

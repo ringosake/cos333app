@@ -90,6 +90,10 @@
             android:name="com.example.cos333app.NotificationActivity"
             android:label="@string/title_activity_notification" >
         </activity>
+        <activity
+            android:name="com.example.cos333app.Details"
+            android:label="@string/title_details" >
+        </activity>
     </application>
 
 </manifest>
